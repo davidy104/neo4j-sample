@@ -125,6 +125,74 @@ public class DumpQueriesTest {
 		dump("MATCH (b:Book) OPTIONAL MATCH (b) -[p:PublishedBy]-> (c) RETURN b.title, p.year ORDER BY COALESCE(p.year,-5000) DESC LIMIT 5");
 	}
 
+	/**
+	 * Aggregating results
+	 */
+	// Suppose that we want to know the number of users who have voted for a
+	// book.
+	@Test
+	public void testCountingMatchingRows() {
+		dump("START b=node(5) MATCH (b:Book) <-[r:Votes]- (:User) RETURN COUNT(*) as votes");
+		dump("MATCH (b:Book {title: \"The Art of Prolog\"}) OPTIONAL MATCH (b) <-[r:Votes]- (:User) RETURN b, COUNT(r.score) as votes");
+		dump("MATCH (b:Book {title: \"The Art of Prolog\"}) OPTIONAL MATCH (b) <-[r:Votes]- (:User) RETURN b, COUNT(*) as votes");
+	}
+
+	@Test
+	public void testSummation() {
+		dump("START b=node(5) MATCH (b:Book) <-[r:Votes]- (:User) RETURN COUNT(*) as votes, SUM(r.score) as total");
+	}
+
+	@Test
+	public void testAverage() {
+		dump("START b=node(5) MATCH (b:Book) <-[r:Votes]- (:User) RETURN AVG(r.score) as avgScore");
+	}
+
+	@Test
+	public void testMaximumAndMinimum() {
+		dump("START b=node(5) MATCH (b:Book) <-[r:Votes]- (:User) RETURN MAX(r.score), MIN(r.score)");
+	}
+
+	// In our case, it will predict how many voters agree about the average
+	// score.The preceding query returns the standard deviation with the
+	// average.
+	// The result tells us that the average is 3.8 and that users agree with the
+	// votes.
+	@Test
+	public void testStandardDeviation() {
+		dump("START b=node(5) MATCH (b:Book) <-[r:Votes]- (:User) RETURN AVG(r.score) as avgScore, STDEV(r.score) as stdDevScore");
+	}
+
+	// Collecting values in an array
+	@Test
+	public void testCollectingValues() {
+		dump("START b=node(5,6) MATCH (b:Book) <-[r:Votes]- (:User) RETURN b.title, COLLECT(r.score)");
+		dump("START b=node(5,6) MATCH (b:Book) <-[r:Votes]- (:User) RETURN COLLECT(r.score)");
+		dump("START b=node(5) MATCH (b:Book) <-[r:Votes]- (:User) RETURN AVG(r.score) as avgScore, COLLECT(r.score)");
+		dump("MATCH (b:Book) <-[r:Votes]- (:User) RETURN b, AVG(r.score) as avgScore ORDER BY avgScore DESC");
+	}
+
+	@Test
+	public void testConditionalExpressions() {
+		dump("MATCH (b:Book)<-[r:Votes]-(:User) OPTIONAL MATCH (b) -[p:PublishedBy]-> (c) RETURN p.year, r.score");
+		dump("MATCH (b:Book)<-[r:Votes]-(:User) OPTIONAL MATCH (b) -[p:PublishedBy]-> (c) RETURN CASE WHEN p.year > 2010 THEN 'Recent' ELSE 'Old' END as category, AVG(r.score)");
+		dump("MATCH (b:Book)<-[r:Votes]-(:User) OPTIONAL MATCH (b) -[p:PublishedBy]-> (c) RETURN CASE p.year % 2 WHEN 0 THEN 'Even' WHEN 1 THEN 'Odd' ELSE 'Unknown' END as parity, AVG(r.score)");
+		dump("MATCH (b:Book)<-[r:Votes]-(:User) OPTIONAL MATCH (b) -[p:PublishedBy]-> (c) RETURN CASE COALESCE(p.year % 2, -1) WHEN 0 THEN 'Even' WHEN 1 THEN 'Odd' ELSE 'Unknown' END as parity, AVG(r.score)");
+	}
+
+	@Test
+	public void testSeparatingQueryPartsUsingWITH() {
+		dump("MATCH (b:Book) <-[r:Votes]- (:User) WITH b, AVG(r.score) as avgScore WHERE avgScore >=4 RETURN b, avgScore ORDER BY avgScore DESC");
+		dump("MATCH (b:Book) <-[r:Votes]- (:User) WITH b, AVG(r.score) as avgScore "
+				+ "ORDER BY avgScore DESC LIMIT 1 OPTIONAL MATCH (b) -[p:PublishedBy]-> () "
+				+ "RETURN b.title, p.year");
+	}
+
+	@Test
+	public void testUNION() {
+		dump("MATCH (b:Book) RETURN 'Books' as type, COUNT(b) as cnt UNION ALL "
+				+ "MATCH (a:Person) RETURN 'Authors' as type, COUNT(a) as cnt");
+	}
+
 	private void dump(final String query) {
 		LOGGER.info(query);
 		LOGGER.info(executionEngine.execute(query).dumpToString());
