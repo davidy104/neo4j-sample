@@ -25,6 +25,9 @@
 		<commons-io.version>2.4</commons-io.version>
 		<commons-lang3.version>3.3.2</commons-lang3.version>
 		<commons-collections.version>3.2.1</commons-collections.version>
+		<spring-data-neo4j.version>3.1.4.RELEASE</spring-data-neo4j.version>
+		<hibernate-validator.version>5.1.2.Final</hibernate-validator.version>
+		<jersey.version>1.18.1</jersey.version>
 	</properties>
 
 	<dependencyManagement>
@@ -116,6 +119,16 @@
 				<version>${spring.version}</version>
 			</dependency>
 			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-config</artifactId>
+				<version>3.2.5.RELEASE</version>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework</groupId>
+				<artifactId>spring-aspects</artifactId>
+				<version>${spring.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>org.springframework</groupId>
 				<artifactId>spring-jdbc</artifactId>
 				<version>${spring.version}</version>
@@ -135,6 +148,35 @@
 				<artifactId>spring-tx</artifactId>
 				<version>${spring.version}</version>
 			</dependency>
+			<!-- spring data -->
+			<dependency>
+				<groupId>org.springframework.data</groupId>
+				<artifactId>spring-data-neo4j-rest</artifactId>
+				<version>${spring-data-neo4j.version}</version>
+				<type>test-jar</type>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.data</groupId>
+				<artifactId>spring-data-neo4j-aspects</artifactId>
+				<version>${spring-data-neo4j.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.hibernate.javax.persistence</groupId>
+						<artifactId>hibernate-jpa-2.0-api</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>org.springframework.data</groupId>
+				<artifactId>spring-data-neo4j-rest</artifactId>
+				<version>${spring-data-neo4j.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.hibernate</groupId>
+				<artifactId>hibernate-validator</artifactId>
+				<version>${hibernate-validator.version}</version>
+			</dependency>
 			<!-- log dependencies -->
 			<dependency>
 				<groupId>ch.qos.logback</groupId>
@@ -151,9 +193,105 @@
 				<artifactId>slf4j-api</artifactId>
 				<version>${slf4j.version}</version>
 			</dependency>
+			<!-- jersey dependencies -->
+			<dependency>
+				<groupId>com.sun.jersey</groupId>
+				<artifactId>jersey-server</artifactId>
+				<version>${jersey.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sun.jersey</groupId>
+				<artifactId>jersey-client</artifactId>
+				<version>${jersey.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sun.jersey</groupId>
+				<artifactId>jersey-core</artifactId>
+				<version>${jersey.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sun.jersey.contribs</groupId>
+				<artifactId>jersey-apache-client</artifactId>
+				<version>${jersey.version}</version>
+				<exclusions>
+					<exclusion>
+						<artifactId>commons-logging</artifactId>
+						<groupId>commons-logging</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>commons-codec</artifactId>
+						<groupId>commons-codec</groupId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>com.sun.jersey</groupId>
+				<artifactId>jersey-json</artifactId>
+				<version>${jersey.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sun.jersey</groupId>
+				<artifactId>jersey-fastinfoset</artifactId>
+				<version>${jersey.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sun.jersey.contribs</groupId>
+				<artifactId>jersey-atom-abdera</artifactId>
+				<version>${jersey.version}</version>
+				<exclusions>
+					<exclusion>
+						<artifactId>commons-logging</artifactId>
+						<groupId>commons-logging</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>commons-codec</artifactId>
+						<groupId>commons-codec</groupId>
+					</exclusion>
+					<exclusion>
+						<artifactId>jaxen</artifactId>
+						<groupId>jaxen</groupId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>com.sun.jersey</groupId>
+				<artifactId>jersey-atom</artifactId>
+				<version>${jersey.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sun.jersey.contribs</groupId>
+				<artifactId>jersey-multipart</artifactId>
+				<version>${jersey.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.sun.jersey.contribs</groupId>
+				<artifactId>jersey-spring</artifactId>
+				<version>${jersey.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-core</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-web</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-beans</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.springframework</groupId>
+						<artifactId>spring-context</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
-
 	<build>
 		<plugins>
 			<plugin>
@@ -194,5 +332,7 @@
 	<modules>
 		<module>neo4j-sample-bookshop</module>
 		<module>neo4j-sample-rest-simplecase</module>
+		<module>neo4j-sample-springdata-movie</module>
+		<module>neo4j-sample-jersey-simple</module>
 	</modules>
 </project>

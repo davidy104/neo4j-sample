@@ -15,6 +15,7 @@ import nz.co.neo4j.sample.bookshop.data.model.Book;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.neo4j.cypher.javacompat.ExecutionEngine;
@@ -27,6 +28,7 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+@Ignore("no need to run all the time")
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestApplicationContextConfiguration.class)
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
