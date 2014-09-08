@@ -22,28 +22,26 @@ import com.sun.jersey.api.client.WebResource;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = ApplicationContextConfiguration.class)
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
-public class Neo4jRestCRUDIntegrationTest {
+public class Neo4jRestCypherIntegrationTest {
 
 	private static final String HTTP_URI = "http://localhost:7474/db/data/";
-	private static final String CYPHER_PATH = "cypher";
 
 	private static final Logger LOGGER = LoggerFactory
-			.getLogger(Neo4jRestCRUDIntegrationTest.class);
+			.getLogger(Neo4jRestCypherIntegrationTest.class);
 
 	@Autowired
 	private Client jerseyClient;
 
 	@After
 	public void cleanUp() throws Exception {
-//		this.deleteTestNode();
+		// this.deleteTestNode();
 	}
 
 	@Test
-	public void testCypherQueriesCreateNode() throws Exception {
-		String jsonBody = "{\"query\" : \"CREATE (u:User { name : {name}, surname: {surname} }) RETURN u\",\"params\" : {\"name\" : \"John\", \"surname\" : \"Doe\"}}";
+	public void testCreateNode() throws Exception {
+		String jsonBody = "{\"title\":\"The Idiot\",\"tags\":[\"novel\"]}";
 
-		WebResource webResource = jerseyClient.resource(HTTP_URI).path(
-				CYPHER_PATH);
+		WebResource webResource = jerseyClient.resource(HTTP_URI).path("node");
 		ClientResponse response = webResource
 				.accept(MediaType.APPLICATION_JSON)
 				.type(MediaType.APPLICATION_JSON)
@@ -53,10 +51,35 @@ public class Neo4jRestCRUDIntegrationTest {
 	}
 
 	@Test
-	public void deleteTestNode() throws Exception {
+	public void testDeleteNode() throws Exception {
+		String location = "http://localhost:7474/db/data/node/13";
+		WebResource webResource = jerseyClient.resource(location);
+		ClientResponse response = webResource
+				.accept(MediaType.APPLICATION_JSON)
+				.type(MediaType.APPLICATION_JSON).delete(ClientResponse.class);
+		String respStr = JerseyClientUtil.getResponsePayload(response);
+		LOGGER.info("respStr:{} ", respStr);
+	}
+
+	@Test
+	public void testCypherCreateNode() throws Exception {
+		String jsonBody = "{\"query\" : \"CREATE (u:User { name : {name}, surname: {surname} }) RETURN u\",\"params\" : {\"name\" : \"John\", \"surname\" : \"Doe\"}}";
+
+		WebResource webResource = jerseyClient.resource(HTTP_URI)
+				.path("cypher");
+		ClientResponse response = webResource
+				.accept(MediaType.APPLICATION_JSON)
+				.type(MediaType.APPLICATION_JSON)
+				.post(ClientResponse.class, jsonBody);
+		String respStr = JerseyClientUtil.getResponsePayload(response);
+		LOGGER.info("respStr:{} ", respStr);
+	}
+
+	@Test
+	public void testCypherDeleteNode() throws Exception {
 		String jsonBody = "{\"query\" : \"MATCH (u:User { name : {name}, surname: {surname} }) DELETE u\",\"params\" : {\"name\" : \"John\", \"surname\" : \"Doe\"}}";
-		WebResource webResource = jerseyClient.resource(HTTP_URI).path(
-				CYPHER_PATH);
+		WebResource webResource = jerseyClient.resource(HTTP_URI)
+				.path("cypher");
 		ClientResponse response = webResource
 				.accept(MediaType.APPLICATION_JSON)
 				.type(MediaType.APPLICATION_JSON)
