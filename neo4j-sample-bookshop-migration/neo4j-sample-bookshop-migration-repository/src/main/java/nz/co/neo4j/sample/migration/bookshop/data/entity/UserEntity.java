@@ -3,6 +3,7 @@ package nz.co.neo4j.sample.migration.bookshop.data.entity;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.CascadeType;
@@ -14,6 +15,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -34,6 +37,10 @@ public class UserEntity implements Serializable {
 
 	@Column(name = "PASSWORD")
 	private String password;
+
+	@Temporal(TemporalType.DATE)
+	@Column(name = "CREATE_DATE")
+	private Date createDate;
 
 	@OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "votePK.user")
 	private List<VoteEntity> votes = Collections.emptyList();
@@ -77,18 +84,38 @@ public class UserEntity implements Serializable {
 		this.password = password;
 	}
 
-	public static Builder getBuilder(String userName, String password) {
-		return new Builder(userName, password);
+	public Date getCreateDate() {
+		return createDate;
+	}
+
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
+	}
+
+	public static Builder getBuilder(String userName, String password,
+			Date createDate) {
+		return new Builder(userName, password, createDate);
+	}
+
+	public static Builder getBuilder(String userName, Date createDate) {
+		return new Builder(userName, createDate);
 	}
 
 	public static class Builder {
 
 		private UserEntity built;
 
-		public Builder(String userName, String password) {
+		public Builder(String userName, String password, Date createDate) {
 			built = new UserEntity();
 			built.userName = userName;
 			built.password = password;
+			built.createDate = createDate;
+		}
+
+		public Builder(String userName, Date createDate) {
+			built = new UserEntity();
+			built.userName = userName;
+			built.createDate = createDate;
 		}
 
 		public UserEntity build() {

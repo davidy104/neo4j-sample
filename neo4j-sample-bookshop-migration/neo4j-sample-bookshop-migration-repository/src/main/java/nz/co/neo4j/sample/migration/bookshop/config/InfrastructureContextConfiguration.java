@@ -5,6 +5,8 @@ import java.util.Properties;
 import javax.annotation.Resource;
 import javax.sql.DataSource;
 
+import nz.co.neo4j.sample.migration.bookshop.data.repository.BaseRepositoryFactoryBean;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
@@ -20,7 +22,7 @@ import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 @Configuration
 @EnableTransactionManagement
-@EnableJpaRepositories("nz.co.neo4j.sample.migration.bookshop.data.repository")
+@EnableJpaRepositories(basePackages = "nz.co.neo4j.sample.migration.bookshop.data.repository", repositoryFactoryBeanClass = BaseRepositoryFactoryBean.class)
 @PropertySource("classpath:jpa.properties")
 public class InfrastructureContextConfiguration {
 	@Resource
