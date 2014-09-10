@@ -105,10 +105,18 @@
 			<plugin>
 				<groupId>com.mysema.maven</groupId>
 				<artifactId>maven-apt-plugin</artifactId>
-				<!-- <executions> <execution> <phase>generate-sources</phase> <goals> 
-					<goal>process</goal> </goals> <configuration> <outputDirectory>target/generated-sources</outputDirectory> 
-					<processor>com.mysema.query.apt.jpa.JPAAnnotationProcessor</processor> </configuration> 
-					</execution> </executions> -->
+				<executions>
+					<execution>
+						<phase>generate-sources</phase>
+						<goals>
+							<goal>process</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>target/generated-sources</outputDirectory>
+							<processor>com.mysema.query.apt.jpa.JPAAnnotationProcessor</processor>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>

@@ -35,7 +35,7 @@
 		<hibernate.version>4.3.6.Final</hibernate.version>
 		<querydsl.version>3.4.2</querydsl.version>
 		<spring.data.version>1.6.4.RELEASE</spring.data.version>
-		<maven-apt-plugin.version>1.0.41</maven-apt-plugin.version>
+		<maven-apt-plugin.version>1.0.4</maven-apt-plugin.version>
 	</properties>
 
 	<dependencyManagement>
