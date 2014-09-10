@@ -2,28 +2,29 @@ package nz.co.neo4j.sample.migration.bookshop.data.entity;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
 @SuppressWarnings("serial")
 @Entity
-@Table(name = "T_AUTHOR")
+@Table(name = "T_CUSTOMER")
 @PrimaryKeyJoinColumn(name = "PERSON_ID")
-public class AuthorEntity extends PersonEntity implements Serializable {
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "bookAuthorPK.author")
-	private List<BookAuthorEntity> bookAuthors;
+public class CustomerEntity extends PersonEntity implements Serializable {
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "USER_ID", referencedColumnName = "USER_ID")
+	private UserEntity user;
 
-	public List<BookAuthorEntity> getBookAuthors() {
-		return bookAuthors;
+	public UserEntity getUser() {
+		return user;
 	}
 
-	public void setBookAuthors(List<BookAuthorEntity> bookAuthors) {
-		this.bookAuthors = bookAuthors;
+	public void setUser(UserEntity user) {
+		this.user = user;
 	}
 
 	public static Builder getBuilder(String lastName, String firstName,
@@ -37,10 +38,10 @@ public class AuthorEntity extends PersonEntity implements Serializable {
 	}
 
 	public static class Builder {
-		private AuthorEntity built;
+		private CustomerEntity built;
 
 		public Builder(String lastName, String firstName, String email) {
-			built = new AuthorEntity();
+			built = new CustomerEntity();
 			built.lastName = lastName;
 			built.firstName = firstName;
 			built.email = email;
@@ -48,14 +49,14 @@ public class AuthorEntity extends PersonEntity implements Serializable {
 
 		public Builder(String lastName, String firstName, String email,
 				Date birthDate) {
-			built = new AuthorEntity();
+			built = new CustomerEntity();
 			built.lastName = lastName;
 			built.firstName = firstName;
 			built.email = email;
 			built.birthDate = birthDate;
 		}
 
-		public AuthorEntity build() {
+		public CustomerEntity build() {
 			return built;
 		}
 	}

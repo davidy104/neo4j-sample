@@ -7,7 +7,7 @@ import groovy.transform.ToString
 @EqualsAndHashCode(includes=["voteId"])
 class Vote {
 	Long voteId
-	int socre
+	int score
 	Date createTime
 	@Delegate
 	Book book = new Book()

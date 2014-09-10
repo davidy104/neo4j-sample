@@ -17,7 +17,6 @@ import javax.persistence.TemporalType;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import org.apache.commons.lang3.builder.ToStringStyle;
 
 @SuppressWarnings("serial")
 @Entity
@@ -27,20 +26,20 @@ public abstract class PersonEntity implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "PERSON_ID")
-	private Long personId;
+	protected Long personId;
 
 	@Column(name = "LAST_NAME")
-	private String lastName;
+	protected String lastName;
 
 	@Column(name = "FIRST_NAME")
-	private String firstName;
+	protected String firstName;
 
 	@Column(name = "EMAIL")
-	private String email;
+	protected String email;
 
 	@Column(name = "BIRTH_DATE")
 	@Temporal(TemporalType.DATE)
-	private Date birthDate;
+	protected Date birthDate;
 
 	public Long getPersonId() {
 		return personId;
@@ -74,6 +73,14 @@ public abstract class PersonEntity implements Serializable {
 		this.birthDate = birthDate;
 	}
 
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		EqualsBuilder builder = new EqualsBuilder();
@@ -89,10 +96,7 @@ public abstract class PersonEntity implements Serializable {
 
 	@Override
 	public String toString() {
-		return new ToStringBuilder(this, ToStringStyle.DEFAULT_STYLE)
-				.append("personId", personId).append("email", email)
-				.append("lastName", lastName).append("firstName", firstName)
-				.append("birthDate", birthDate).toString();
+		return ToStringBuilder.reflectionToString(this);
 	}
 
 }

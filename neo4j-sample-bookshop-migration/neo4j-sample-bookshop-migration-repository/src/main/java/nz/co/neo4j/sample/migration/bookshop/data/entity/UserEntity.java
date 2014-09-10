@@ -1,21 +1,57 @@
 package nz.co.neo4j.sample.migration.bookshop.data.entity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "T_USER")
 public class UserEntity implements Serializable {
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "USER_ID")
 	private Long userId;
+
+	@Column(name = "USER_NAME")
 	private String userName;
+
+	@Column(name = "PASSWORD")
 	private String password;
+
+	@OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "votePK.user")
+	private List<VoteEntity> votes = Collections.emptyList();
+
+	public void addVote(final VoteEntity vote) {
+		if (this.votes.isEmpty()) {
+			this.votes = new ArrayList<>();
+		}
+		this.votes.add(vote);
+	}
+
+	public List<VoteEntity> getVotes() {
+		return votes;
+	}
+
+	public void setVotes(List<VoteEntity> votes) {
+		this.votes = votes;
+	}
 
 	public Long getUserId() {
 		return userId;
@@ -41,6 +77,25 @@ public class UserEntity implements Serializable {
 		this.password = password;
 	}
 
+	public static Builder getBuilder(String userName, String password) {
+		return new Builder(userName, password);
+	}
+
+	public static class Builder {
+
+		private UserEntity built;
+
+		public Builder(String userName, String password) {
+			built = new UserEntity();
+			built.userName = userName;
+			built.password = password;
+		}
+
+		public UserEntity build() {
+			return built;
+		}
+	}
+
 	@Override
 	public boolean equals(Object obj) {
 		EqualsBuilder builder = new EqualsBuilder();
@@ -56,6 +111,9 @@ public class UserEntity implements Serializable {
 
 	@Override
 	public String toString() {
-		return ToStringBuilder.reflectionToString(this);
+		return new ToStringBuilder(this, ToStringStyle.DEFAULT_STYLE)
+				.append("userId", userId).append("userName", userName)
+				.toString();
 	}
+
 }

@@ -21,6 +21,7 @@ import javax.persistence.TemporalType;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
 
 @SuppressWarnings("serial")
 @Entity
@@ -70,6 +71,10 @@ public class PublisherEntity implements Serializable {
 		return publications;
 	}
 
+	public void setPublications(List<PublicationEntity> publications) {
+		this.publications = publications;
+	}
+
 	public void addPublication(final PublicationEntity publicationEntity) {
 		if (publications.isEmpty()) {
 			publications = new ArrayList<>();
@@ -92,6 +97,8 @@ public class PublisherEntity implements Serializable {
 
 	@Override
 	public String toString() {
-		return ToStringBuilder.reflectionToString(this);
+		return new ToStringBuilder(this, ToStringStyle.DEFAULT_STYLE)
+				.append("publisherId", publisherId).append("name", name)
+				.append("createTime", createTime).toString();
 	}
 }
