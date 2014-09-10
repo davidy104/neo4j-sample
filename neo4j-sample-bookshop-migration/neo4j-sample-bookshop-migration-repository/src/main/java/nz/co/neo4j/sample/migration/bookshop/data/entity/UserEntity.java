@@ -140,7 +140,7 @@ public class UserEntity implements Serializable {
 	public String toString() {
 		return new ToStringBuilder(this, ToStringStyle.DEFAULT_STYLE)
 				.append("userId", userId).append("userName", userName)
-				.toString();
+				.append("createDate", createDate).toString();
 	}
 
 }

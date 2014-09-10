@@ -34,7 +34,7 @@ public interface BaseRepository<T, ID extends Serializable> extends
 	 * uses provided projections ( can be JavaBean or constructor or anything
 	 * supported by QueryDSL
 	 * 
-	 * @param constructorExpression
+	 * @param factoryExpression
 	 *            this constructor expression will be used for transforming
 	 *            query results
 	 * @param predicate
@@ -43,5 +43,13 @@ public interface BaseRepository<T, ID extends Serializable> extends
 	 */
 	Page<T> findAll(FactoryExpression<T> factoryExpression,
 			Predicate predicate, Pageable pageable);
+
+	/**
+	 * factoryExpression can be used to filter out not needed data
+	 * @param factoryExpression 
+	 * @param predicate
+	 * @return
+	 */
+	T findOne(FactoryExpression<T> factoryExpression, Predicate predicate);
 
 }

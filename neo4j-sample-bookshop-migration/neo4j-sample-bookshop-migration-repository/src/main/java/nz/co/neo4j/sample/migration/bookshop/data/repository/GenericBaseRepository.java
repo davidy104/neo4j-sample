@@ -71,4 +71,10 @@ public class GenericBaseRepository<T, ID extends Serializable> extends
 		return new PageImpl<T>(content, pageable, total);
 	}
 
+	@Override
+	public T findOne(FactoryExpression<T> factoryExpression, Predicate predicate) {
+		JPQLQuery query = createQuery(predicate);
+		return query.singleResult(factoryExpression);
+	}
+
 }

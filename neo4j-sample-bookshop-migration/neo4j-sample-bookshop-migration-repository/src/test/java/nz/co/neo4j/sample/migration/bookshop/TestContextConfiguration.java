@@ -8,5 +8,4 @@ import org.springframework.context.annotation.Import;
 @Configuration
 @Import(value = { InfrastructureContextConfiguration.class })
 public class TestContextConfiguration {
-
 }
