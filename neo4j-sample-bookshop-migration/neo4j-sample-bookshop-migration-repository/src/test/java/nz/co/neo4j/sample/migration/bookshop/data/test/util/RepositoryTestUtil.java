@@ -1,4 +1,4 @@
-package nz.co.neo4j.sample.migration.bookshop;
+package nz.co.neo4j.sample.migration.bookshop.data.test.util;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

@@ -3,6 +3,7 @@ package nz.co.neo4j.sample.migration.bookshop.data.entity;
 import java.io.Serializable;
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -15,7 +16,7 @@ import javax.persistence.Table;
 @Table(name = "T_CUSTOMER")
 @PrimaryKeyJoinColumn(name = "PERSON_ID")
 public class CustomerEntity extends PersonEntity implements Serializable {
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
 	@JoinColumn(name = "USER_ID", referencedColumnName = "USER_ID")
 	private UserEntity user;
 

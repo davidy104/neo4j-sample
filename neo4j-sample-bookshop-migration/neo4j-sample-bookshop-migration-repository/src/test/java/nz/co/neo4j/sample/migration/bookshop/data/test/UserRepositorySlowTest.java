@@ -1,16 +1,20 @@
-package nz.co.neo4j.sample.migration.bookshop;
+package nz.co.neo4j.sample.migration.bookshop.data.test;
 
 import static nz.co.neo4j.sample.migration.bookshop.data.entity.QUserEntity.userEntity;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Resource;
 
+import nz.co.neo4j.sample.migration.bookshop.NotFoundException;
 import nz.co.neo4j.sample.migration.bookshop.data.entity.UserEntity;
 import nz.co.neo4j.sample.migration.bookshop.data.repository.UserRepository;
+import nz.co.neo4j.sample.migration.bookshop.data.test.util.RepositoryTestUtil;
+import nz.co.neo4j.sample.migration.bookshop.data.test.util.TestContextConfiguration;
 
 import org.junit.After;
 import org.junit.Before;
@@ -28,6 +32,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.mysema.query.types.Predicate;
 import com.mysema.query.types.Projections;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -88,6 +93,28 @@ public class UserRepositorySlowTest {
 		List<UserEntity> users = page.getContent();
 		LOGGER.info("pageSize:{} ", pageSize);
 		LOGGER.info("pageNumber:{} ", pageNumber);
+		LOGGER.info("firstUser:{} ", users.get(0));
+
+	}
+
+	@Test
+	public void testPagingByCreateDate() throws Exception {
+		Date from = RepositoryTestUtil.DATE_FORMAT.parse("2013-01-01");
+		Date to = RepositoryTestUtil.DATE_FORMAT.parse("2014-06-01");
+		Pageable pageSpecification = new PageRequest(0, 5, new Sort(
+				Sort.Direction.ASC, "createDate"));
+		Predicate predicate = userEntity.createDate.between(from, to);
+
+		Page<UserEntity> page = userRepository.findAll(Projections.bean(
+				UserEntity.class, userEntity.userId, userEntity.createDate,
+				userEntity.userName), predicate, pageSpecification);
+		int pageSize = page.getSize();
+		int pageNumber = page.getNumber();
+		List<UserEntity> users = page.getContent();
+		assertEquals(2, users.size());
+		LOGGER.info("pageSize:{} ", pageSize);
+		LOGGER.info("pageNumber:{} ", pageNumber);
+		LOGGER.info("found size:{} ", users.size());
 		LOGGER.info("firstUser:{} ", users.get(0));
 	}
 
