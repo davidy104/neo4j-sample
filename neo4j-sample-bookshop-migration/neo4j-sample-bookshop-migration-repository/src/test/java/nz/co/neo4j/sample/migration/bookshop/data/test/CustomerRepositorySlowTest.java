@@ -101,4 +101,12 @@ public class CustomerRepositorySlowTest {
 		}
 	}
 
+	@Test
+	@Transactional
+	public void testMethodNameQuery() {
+		List<CustomerEntity> customers = customerRepository
+				.findByFirstNameStartingWithOrLastNameStartingWith("Bra", "Wu");
+		LOGGER.info("firstone: {} ", customers.get(0));
+	}
+
 }

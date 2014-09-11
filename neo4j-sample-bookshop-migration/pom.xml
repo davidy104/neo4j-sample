@@ -13,5 +13,6 @@
 	<modules>
 		<module>neo4j-sample-bookshop-migration-shared</module>
     <module>neo4j-sample-bookshop-migration-repository</module>
+    <module>neo4j-sample-bookshop-migration-ds</module>
   </modules>
 </project>
