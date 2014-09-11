@@ -1,4 +1,4 @@
-package nz.co.neo4j.sample.migration.bookshop.data.test.util;
+package nz.co.neo4j.sample.migration.bookshop.data.support;
 
 import java.text.DateFormat;
 import java.text.ParseException;

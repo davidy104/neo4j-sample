@@ -29,43 +29,62 @@ class UserDSImpl implements UserDS{
 	User createUser(final String userName,final String password) {
 		log.debug "createUser start: {} $userName, $password"
 		User created
-		UserEntity userEntity
+		UserEntity addUserEntity
 		try {
-			userEntity = userRepository.findOne(userEntity.userName.eq(userName))
+			Predicate predicate = userEntity.userName.eq(userName)
+			addUserEntity = userRepository.findOne(predicate)
 		} catch (e) {
 			throw new DuplicatedException(e)
 		}
-		if(userEntity){
+		if(addUserEntity){
 			throw new DuplicatedException('User[$userName] existed')
 		}
-		userEntity = UserEntity.getBuilder(userName, password, new Date()).built();
-		userRepository.save(userEntity);
-		created = new User(userId:userEntity.userId,userName:userEntity.userName)
+		addUserEntity = new UserEntity(userName:userName,password:password,createDate:new Date())
+		userRepository.save(addUserEntity);
+		created = new User(userId:addUserEntity.userId,userName:addUserEntity.userName,createDate:addUserEntity.createDate)
 		log.debug "createUser end: {} $created"
 		return created
 	}
 
 	@Override
 	public User loginUser(final String userName,final String password) {
-
 		return null
 	}
 
 	@Override
 	public User getUser(final String userName) throws NotFoundException {
-		return null
+		UserEntity foundEntity
+		Predicate predicate = userEntity.userName.eq(userName)
+		foundEntity = userRepository.findOne(predicate)
+		if(!foundEntity){
+			throw new NotFoundException('User not found by name[$userName]')
+		}
+		return new User(userId:foundEntity.userId,userName:foundEntity.userName,createDate:foundEntity.createDate)
 	}
 
 	@Override
 	@Transactional
-	public User updateUser(Long userId, User updatedUser)
+	User updateUser(Long userId, User updatedUser)
 	throws NotFoundException {
-
-		return null
+		UserEntity foundEntity
+		foundEntity = userRepository.findOne(userId)
+		if(!foundEntity){
+			throw new NotFoundException('User not found by userId[$userId]')
+		}
+		foundEntity.userName = updatedUser.userName
+		if(updatedUser.password){
+			foundEntity.password = updatedUser.password
+		}
+		if(updatedUser.createDate){
+			foundEntity.createDate = updatedUser.createDate
+		}
+		userRepository.save(foundEntity)
+		return new User(userId:foundEntity.userId,userName:foundEntity.userName,createDate:foundEntity.createDate)
 	}
 
 	@Override
 	@Transactional
-	public void deleteUser(Long userId) throws NotFoundException {
+	void deleteUser(Long userId) throws NotFoundException {
+		
 	}
 }

@@ -9,4 +9,5 @@ class User {
 	Long userId
 	String userName
 	String password
+	Date createDate
 }
