@@ -102,11 +102,20 @@ public class CustomerRepositorySlowTest {
 	}
 
 	@Test
-	@Transactional
+	@Transactional(readOnly = true)
 	public void testMethodNameQuery() {
 		List<CustomerEntity> customers = customerRepository
 				.findByFirstNameStartingWithOrLastNameStartingWith("Bra", "Wu");
 		LOGGER.info("firstone: {} ", customers.get(0));
+	}
+
+	@Test
+//	@Transactional(readOnly = true)
+	public void testQueryAnnotation() {
+		List<CustomerEntity> customers = customerRepository
+				.findCustomers("Brad");
+		LOGGER.info("find one: {} ", customers.get(0));
+//		LOGGER.info("user:{} ",customers.get(0).getUser());
 	}
 
 }

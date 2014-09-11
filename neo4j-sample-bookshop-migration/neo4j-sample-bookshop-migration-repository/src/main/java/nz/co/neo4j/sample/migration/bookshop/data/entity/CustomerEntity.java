@@ -11,6 +11,9 @@ import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
+import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "T_CUSTOMER")
@@ -60,6 +63,14 @@ public class CustomerEntity extends PersonEntity implements Serializable {
 		public CustomerEntity build() {
 			return built;
 		}
+	}
+
+	@Override
+	public String toString() {
+		return new ToStringBuilder(this, ToStringStyle.DEFAULT_STYLE)
+				.append("personId", personId).append("lastName", lastName)
+				.append("firstName", firstName).append("email", email)
+				.append("birthDate", birthDate).toString();
 	}
 
 }
