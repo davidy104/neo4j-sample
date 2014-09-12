@@ -15,7 +15,6 @@ import nz.co.neo4j.sample.migration.bookshop.data.repository.CustomerRepository;
 import nz.co.neo4j.sample.migration.bookshop.data.repository.UserRepository;
 import nz.co.neo4j.sample.migration.bookshop.data.test.util.RepositoryTestContextConfiguration;
 
-import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -43,11 +42,6 @@ public class CustomerRepositorySlowTest {
 
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(CustomerRepositorySlowTest.class);
-
-	@After
-	public void cleanUp() {
-		this.customerRepository.deleteAll();
-	}
 
 	@Test
 	public void testFindAll() {
@@ -104,7 +98,8 @@ public class CustomerRepositorySlowTest {
 	@Transactional(readOnly = true)
 	public void testMethodNameQuery() {
 		List<CustomerEntity> customers = customerRepository
-				.findByFirstNameStartingWithOrLastNameStartingWith("Jord", "Mike");
+				.findByFirstNameStartingWithOrLastNameStartingWith("Jord",
+						"Mike");
 		LOGGER.info("firstone: {} ", customers.get(0));
 	}
 

@@ -21,6 +21,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
+//@NamedQueries({ @NamedQuery(name = "BookEntity.countVotes", query = "SELECT COUNT(v) FROM BookEntity b, VoteEntity v WHERE b.bookId = v.bookId AND LOWER(b.title) = LOWER(:bookTitle)") })
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "T_BOOK")
