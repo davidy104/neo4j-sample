@@ -38,7 +38,7 @@ public class PublisherEntity implements Serializable {
 	@Temporal(value = TemporalType.TIME)
 	private Date createTime;
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "publisher")
+	@OneToMany(fetch = FetchType.LAZY)
 	private Set<BookEntity> books = Collections.emptySet();
 
 	public Long getPublisherId() {

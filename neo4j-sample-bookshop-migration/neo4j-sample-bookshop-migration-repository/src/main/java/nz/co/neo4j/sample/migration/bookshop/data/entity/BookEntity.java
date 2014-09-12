@@ -42,7 +42,7 @@ public class BookEntity implements Serializable {
 	@OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "bookAuthorPK.book")
 	private List<BookAuthorEntity> bookAuthors = Collections.emptyList();
 
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "votePK.book")
+	@OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "votePK.book")
 	private List<VoteEntity> votes = Collections.emptyList();
 
 	@Embedded
@@ -53,6 +53,13 @@ public class BookEntity implements Serializable {
 			this.bookAuthors = new ArrayList<>();
 		}
 		this.bookAuthors.add(bookAuthor);
+	}
+
+	public void addVote(final VoteEntity vote) {
+		if (this.votes.isEmpty()) {
+			this.votes = new ArrayList<>();
+		}
+		this.votes.add(vote);
 	}
 
 	public Long getBookId() {
@@ -109,6 +116,11 @@ public class BookEntity implements Serializable {
 
 	public void setPublication(PublicationEntity publication) {
 		this.publication = publication;
+	}
+
+	public static Builder getBuilder(String title, Integer pages, String tags,
+			PublicationEntity publication) {
+		return new Builder(title, pages, tags, publication);
 	}
 
 	public static Builder getBuilder(String title, Integer pages, String tags) {

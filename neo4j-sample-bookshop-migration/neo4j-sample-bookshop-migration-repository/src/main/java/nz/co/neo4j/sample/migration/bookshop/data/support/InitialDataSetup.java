@@ -10,11 +10,18 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
 import nz.co.neo4j.sample.migration.bookshop.data.entity.AuthorEntity;
+import nz.co.neo4j.sample.migration.bookshop.data.entity.BookAuthorEntity;
+import nz.co.neo4j.sample.migration.bookshop.data.entity.BookEntity;
 import nz.co.neo4j.sample.migration.bookshop.data.entity.CustomerEntity;
+import nz.co.neo4j.sample.migration.bookshop.data.entity.PublicationEntity;
+import nz.co.neo4j.sample.migration.bookshop.data.entity.PublisherEntity;
 import nz.co.neo4j.sample.migration.bookshop.data.entity.UserEntity;
+import nz.co.neo4j.sample.migration.bookshop.data.entity.VoteEntity;
 import nz.co.neo4j.sample.migration.bookshop.data.util.AuthorBuilder;
+import nz.co.neo4j.sample.migration.bookshop.data.util.BookBuilder;
 import nz.co.neo4j.sample.migration.bookshop.data.util.CustomerBuilder;
 import nz.co.neo4j.sample.migration.bookshop.data.util.EntityBuilder.EntityBuilderManager;
+import nz.co.neo4j.sample.migration.bookshop.data.util.PublisherBuilder;
 import nz.co.neo4j.sample.migration.bookshop.data.util.UserBuilder;
 
 import org.springframework.transaction.TransactionStatus;
@@ -32,6 +39,9 @@ public class InitialDataSetup {
 	public static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(
 			"yyyy-MM-dd");
 
+	public static SimpleDateFormat TIME_FORMAT = new SimpleDateFormat(
+			"yyyy-MM-dd hh:mm:ss");
+
 	private UserEntity user1;
 	private UserEntity user2;
 	private UserEntity user3;
@@ -42,6 +52,14 @@ public class InitialDataSetup {
 
 	private AuthorEntity author1;
 	private AuthorEntity author2;
+
+	private PublisherEntity publisher;
+
+	private PublicationEntity publication1;
+	private PublicationEntity publication2;
+
+	private BookEntity book1;
+	private BookEntity book2;
 
 	public InitialDataSetup(TransactionTemplate transactionTemplate) {
 		this.transactionTemplate = transactionTemplate;
@@ -95,10 +113,10 @@ public class InitialDataSetup {
 									"Mike",
 									"Jordan",
 									"mike.jordan@gmail.com",
-									getDateFromFormat(DATE_FORMAT, "1970-01-01"));
+									getDateFromFormat(DATE_FORMAT, "1970-01-01"))
+									.setUser(user1);
 						}
 					}.build();
-					cust1.setUser(user1);
 
 					cust2 = new CustomerBuilder() {
 						{
@@ -106,10 +124,10 @@ public class InitialDataSetup {
 									"Ni",
 									"Joe",
 									"ni.joe@gmail.com",
-									getDateFromFormat(DATE_FORMAT, "1990-01-01"));
+									getDateFromFormat(DATE_FORMAT, "1990-01-01"))
+									.setUser(user2);
 						}
 					}.build();
-					cust2.setUser(user2);
 				}
 				// bind user with customer
 				{
@@ -122,19 +140,18 @@ public class InitialDataSetup {
 					author1 = new AuthorBuilder() {
 						{
 							this.create("Achebe", "Chinua",
-									"Chinua.Achebe@gmail.com", null).build();
+									"Chinua.Achebe@gmail.com", null).setUser(
+									user3);
 						}
 					}.build();
-					author1.setUser(user3);
 
 					author2 = new AuthorBuilder() {
 						{
 							this.create("Andersen", "Hans Christian",
 									"HansChristian.Andersen@gmail.com", null)
-									.build();
+									.setUser(user4);
 						}
 					}.build();
-					author2.setUser(user4);
 				}
 
 				// bind user with authors
@@ -143,6 +160,70 @@ public class InitialDataSetup {
 					user4.setPerson(author2);
 				}
 
+				// initial publisher
+				{
+					publisher = new PublisherBuilder() {
+						{
+							this.create("Packt Publishing");
+						}
+					}.build();
+				}
+
+				{
+					new BookBuilder() {
+						{
+							this.create("Things Fall Apart", 345, "novel",
+									publication2)
+									.addPublication(
+											PublicationEntity.getBuilder(2012,
+													publisher).build())
+									.addBookAuthors(
+											BookAuthorEntity.getBuilder(book1,
+													author1).build())
+									.addVotes(
+											VoteEntity
+													.getBuilder(
+															book1,
+															user1,
+															5,
+															getDateFromFormat(
+																	TIME_FORMAT,
+																	"2014-04-02 14:12:21"))
+													.build(),
+											VoteEntity
+													.getBuilder(
+															book1,
+															user2,
+															4,
+															getDateFromFormat(
+																	TIME_FORMAT,
+																	"2014-05-02 10:32:21"))
+													.build());
+						}
+					}.build();
+
+					new BookBuilder() {
+						{
+							this.create("Fairy tales", 234, null, publication1)
+									.addPublication(
+											PublicationEntity.getBuilder(2013,
+													publisher).build())
+									.addBookAuthors(
+											BookAuthorEntity.getBuilder(book2,
+													author2).build())
+									.addVotes(
+											VoteEntity
+													.getBuilder(
+															book2,
+															user2,
+															3,
+															getDateFromFormat(
+																	TIME_FORMAT,
+																	"2014-06-06 16:22:21"))
+													.build());
+						}
+					}.build();
+				}
 				return null;
 			}
 		});

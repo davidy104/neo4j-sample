@@ -3,6 +3,7 @@ package nz.co.neo4j.sample.migration.bookshop.data.util;
 import java.util.Date;
 
 import nz.co.neo4j.sample.migration.bookshop.data.entity.AuthorEntity;
+import nz.co.neo4j.sample.migration.bookshop.data.entity.UserEntity;
 
 public class AuthorBuilder extends EntityBuilder<AuthorEntity> {
 
@@ -19,6 +20,11 @@ public class AuthorBuilder extends EntityBuilder<AuthorEntity> {
 			this.product = AuthorEntity.getBuilder(lastName, firstName, email)
 					.build();
 		}
+		return this;
+	}
+
+	public AuthorBuilder setUser(final UserEntity user) {
+		this.product.setUser(user);
 		return this;
 	}
 

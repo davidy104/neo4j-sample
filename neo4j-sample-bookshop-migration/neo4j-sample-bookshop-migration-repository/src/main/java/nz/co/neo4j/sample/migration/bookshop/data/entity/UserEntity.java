@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -48,7 +47,7 @@ public class UserEntity implements Serializable {
 	@JoinColumn(name = "PERSON_ID", referencedColumnName = "PERSON_ID")
 	protected PersonEntity person;
 
-	@OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "votePK.user")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "votePK.user")
 	private List<VoteEntity> votes = Collections.emptyList();
 
 	public void addVote(final VoteEntity vote) {
