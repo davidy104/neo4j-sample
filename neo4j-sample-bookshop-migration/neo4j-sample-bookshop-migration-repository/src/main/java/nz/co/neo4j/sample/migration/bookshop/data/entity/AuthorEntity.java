@@ -1,8 +1,9 @@
 package nz.co.neo4j.sample.migration.bookshop.data.entity;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -16,13 +17,13 @@ import javax.persistence.Table;
 @PrimaryKeyJoinColumn(name = "PERSON_ID")
 public class AuthorEntity extends PersonEntity implements Serializable {
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "bookAuthorPK.author")
-	private List<BookAuthorEntity> bookAuthors;
+	private Set<BookAuthorEntity> bookAuthors = Collections.emptySet();
 
-	public List<BookAuthorEntity> getBookAuthors() {
+	public Set<BookAuthorEntity> getBookAuthors() {
 		return bookAuthors;
 	}
 
-	public void setBookAuthors(List<BookAuthorEntity> bookAuthors) {
+	public void setBookAuthors(Set<BookAuthorEntity> bookAuthors) {
 		this.bookAuthors = bookAuthors;
 	}
 

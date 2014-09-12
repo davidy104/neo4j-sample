@@ -17,6 +17,9 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "T_VOTE")
@@ -110,5 +113,18 @@ public class VoteEntity implements Serializable {
 		public VoteEntity build() {
 			return built;
 		}
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		EqualsBuilder builder = new EqualsBuilder();
+		return builder.append(this.votePK, ((VoteEntity) obj).votePK)
+				.isEquals();
+	}
+
+	@Override
+	public int hashCode() {
+		HashCodeBuilder builder = new HashCodeBuilder();
+		return builder.append(this.votePK).toHashCode();
 	}
 }

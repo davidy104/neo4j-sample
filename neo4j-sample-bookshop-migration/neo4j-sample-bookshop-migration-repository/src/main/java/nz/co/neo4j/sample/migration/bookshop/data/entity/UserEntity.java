@@ -1,10 +1,10 @@
 package nz.co.neo4j.sample.migration.bookshop.data.entity;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -48,20 +48,20 @@ public class UserEntity implements Serializable {
 	protected PersonEntity person;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "votePK.user")
-	private List<VoteEntity> votes = Collections.emptyList();
+	private Set<VoteEntity> votes = Collections.emptySet();
 
 	public void addVote(final VoteEntity vote) {
 		if (this.votes.isEmpty()) {
-			this.votes = new ArrayList<>();
+			this.votes = new HashSet<>();
 		}
 		this.votes.add(vote);
 	}
 
-	public List<VoteEntity> getVotes() {
+	public Set<VoteEntity> getVotes() {
 		return votes;
 	}
 
-	public void setVotes(List<VoteEntity> votes) {
+	public void setVotes(Set<VoteEntity> votes) {
 		this.votes = votes;
 	}
 

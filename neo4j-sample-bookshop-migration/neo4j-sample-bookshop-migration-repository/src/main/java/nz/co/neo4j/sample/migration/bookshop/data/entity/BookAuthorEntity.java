@@ -14,6 +14,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "T_BOOK_AUTHOR")
@@ -56,7 +59,6 @@ public class BookAuthorEntity implements Serializable {
 	}
 
 	public static class Builder {
-
 		private BookAuthorEntity built;
 
 		public Builder(BookEntity book, AuthorEntity author) {
@@ -70,4 +72,16 @@ public class BookAuthorEntity implements Serializable {
 		}
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		EqualsBuilder builder = new EqualsBuilder();
+		return builder.append(this.bookAuthorPK,
+				((BookAuthorEntity) obj).bookAuthorPK).isEquals();
+	}
+
+	@Override
+	public int hashCode() {
+		HashCodeBuilder builder = new HashCodeBuilder();
+		return builder.append(this.bookAuthorPK).toHashCode();
+	}
 }

@@ -1,9 +1,9 @@
 package nz.co.neo4j.sample.migration.bookshop.data.entity;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -40,24 +40,24 @@ public class BookEntity implements Serializable {
 	private String tags;
 
 	@OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "bookAuthorPK.book")
-	private List<BookAuthorEntity> bookAuthors = Collections.emptyList();
+	private Set<BookAuthorEntity> bookAuthors = Collections.emptySet();
 
 	@OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "votePK.book")
-	private List<VoteEntity> votes = Collections.emptyList();
+	private Set<VoteEntity> votes = Collections.emptySet();
 
 	@Embedded
 	private PublicationEntity publication;
 
 	public void addBookAuthor(final BookAuthorEntity bookAuthor) {
 		if (this.bookAuthors.isEmpty()) {
-			this.bookAuthors = new ArrayList<>();
+			this.bookAuthors = new HashSet<>();
 		}
 		this.bookAuthors.add(bookAuthor);
 	}
 
 	public void addVote(final VoteEntity vote) {
 		if (this.votes.isEmpty()) {
-			this.votes = new ArrayList<>();
+			this.votes = new HashSet<>();
 		}
 		this.votes.add(vote);
 	}
@@ -94,19 +94,19 @@ public class BookEntity implements Serializable {
 		this.tags = tags;
 	}
 
-	public List<BookAuthorEntity> getBookAuthors() {
+	public Set<BookAuthorEntity> getBookAuthors() {
 		return bookAuthors;
 	}
 
-	public void setBookAuthors(List<BookAuthorEntity> bookAuthors) {
+	public void setBookAuthors(Set<BookAuthorEntity> bookAuthors) {
 		this.bookAuthors = bookAuthors;
 	}
 
-	public List<VoteEntity> getVotes() {
+	public Set<VoteEntity> getVotes() {
 		return votes;
 	}
 
-	public void setVotes(List<VoteEntity> votes) {
+	public void setVotes(Set<VoteEntity> votes) {
 		this.votes = votes;
 	}
 
