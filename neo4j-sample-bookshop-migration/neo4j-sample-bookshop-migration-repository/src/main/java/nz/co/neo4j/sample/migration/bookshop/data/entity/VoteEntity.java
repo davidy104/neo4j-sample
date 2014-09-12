@@ -1,5 +1,6 @@
 package nz.co.neo4j.sample.migration.bookshop.data.entity;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.AssociationOverride;
@@ -16,12 +17,13 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+@SuppressWarnings("serial")
 @Entity
 @Table(name = "T_VOTE")
 @AssociationOverrides({
 		@AssociationOverride(name = "votePK.book", joinColumns = @JoinColumn(name = "BOOK_ID")),
 		@AssociationOverride(name = "votePK.user", joinColumns = @JoinColumn(name = "USER_ID")) })
-public class VoteEntity {
+public class VoteEntity implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "VOTE_ID", insertable = false, updatable = false)

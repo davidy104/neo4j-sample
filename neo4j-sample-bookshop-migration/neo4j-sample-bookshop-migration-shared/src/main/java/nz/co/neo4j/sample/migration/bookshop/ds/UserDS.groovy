@@ -8,5 +8,5 @@ interface UserDS {
 	User loginUser(String userName, String password)
 	User getUser(String userName) throws NotFoundException
 	User updateUser(Long userId,User updatedUser) throws NotFoundException
-	void deleteUser(Long userId) throws NotFoundException
+	User deleteUser(Long userId) throws NotFoundException
 }

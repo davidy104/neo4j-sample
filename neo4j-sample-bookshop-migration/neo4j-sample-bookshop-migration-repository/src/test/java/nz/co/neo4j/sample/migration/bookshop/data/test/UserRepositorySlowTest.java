@@ -1,9 +1,9 @@
 package nz.co.neo4j.sample.migration.bookshop.data.test;
 
 import static nz.co.neo4j.sample.migration.bookshop.data.entity.QUserEntity.userEntity;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertEquals;
 
 import java.util.Date;
 import java.util.List;
@@ -13,11 +13,10 @@ import javax.annotation.Resource;
 import nz.co.neo4j.sample.migration.bookshop.NotFoundException;
 import nz.co.neo4j.sample.migration.bookshop.data.entity.UserEntity;
 import nz.co.neo4j.sample.migration.bookshop.data.repository.UserRepository;
-import nz.co.neo4j.sample.migration.bookshop.data.test.util.RepositoryTestUtil;
 import nz.co.neo4j.sample.migration.bookshop.data.test.util.RepositoryTestContextConfiguration;
+import nz.co.neo4j.sample.migration.bookshop.data.test.util.RepositoryTestUtil;
 
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -40,53 +39,52 @@ import com.mysema.query.types.Projections;
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 public class UserRepositorySlowTest {
 
+	public final static String TEST_USERNAME = "jordan";
+
 	@Resource
 	private UserRepository userRepository;
 
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(UserRepositorySlowTest.class);
 
-	@Before
-	public void setUp() throws Exception {
-		userRepository.save(RepositoryTestUtil.userlist());
-	}
-
-	@After
-	public void cleanUp() {
-		userRepository.deleteAll();
-	}
-
 	@Test
+	@Transactional(readOnly = true)
 	public void testFindAll() {
 		List<UserEntity> users = userRepository.findAll();
 		LOGGER.info("users size:{} ", users.size());
+		assertEquals(4, users.size());
 	}
 
 	@Test
+	@Transactional(readOnly = true)
 	public void testFindByName() {
-		UserEntity found = userRepository
-				.findOne(userEntity.userName.eq("dav"));
+		UserEntity found = userRepository.findOne(userEntity.userName
+				.eq(TEST_USERNAME));
 		assertNotNull(found);
+		assertEquals(found.getUserName(), TEST_USERNAME);
 		LOGGER.info("found:{} ", found);
+		LOGGER.info("Person info:{} ", found.getPerson());
 	}
 
 	@Test
+	@Transactional(readOnly = true)
 	public void testFindOneWithSelectedFields() {
 		UserEntity found = userRepository.findOne(Projections.bean(
 				UserEntity.class, userEntity.userId, userEntity.userName),
-				userEntity.userName.eq("dav"));
+				userEntity.userName.eq(TEST_USERNAME));
 		assertNotNull(found);
 		assertNull(found.getCreateDate());
 		LOGGER.info("found:{} ", found);
 	}
 
 	@Test
+	@Transactional(readOnly = true)
 	public void testPaging() {
 		Pageable pageSpecification = new PageRequest(0, 5, new Sort(
 				Sort.Direction.ASC, "createDate"));
 		Page<UserEntity> page = userRepository.findAll(Projections.bean(
 				UserEntity.class, userEntity.userId, userEntity.createDate,
-				userEntity.userName), userEntity.userName.eq("dav"),
+				userEntity.userName), userEntity.userName.eq(TEST_USERNAME),
 				pageSpecification);
 		int pageSize = page.getSize();
 		int pageNumber = page.getNumber();
@@ -98,6 +96,7 @@ public class UserRepositorySlowTest {
 	}
 
 	@Test
+	@Transactional(readOnly = true)
 	public void testPagingByCreateDate() throws Exception {
 		Date from = RepositoryTestUtil.DATE_FORMAT.parse("2013-01-01");
 		Date to = RepositoryTestUtil.DATE_FORMAT.parse("2014-06-01");
@@ -111,7 +110,6 @@ public class UserRepositorySlowTest {
 		int pageSize = page.getSize();
 		int pageNumber = page.getNumber();
 		List<UserEntity> users = page.getContent();
-		assertEquals(2, users.size());
 		LOGGER.info("pageSize:{} ", pageSize);
 		LOGGER.info("pageNumber:{} ", pageNumber);
 		LOGGER.info("found size:{} ", users.size());
@@ -119,13 +117,14 @@ public class UserRepositorySlowTest {
 	}
 
 	@Test
+	@Transactional
 	public void testCreate() {
 		UserEntity user = UserEntity.getBuilder("testUser1", "123", new Date())
 				.build();
 		userRepository.save(user);
 		assertNotNull(user);
 		LOGGER.info("user:{} ", user);
-	
+
 	}
 
 	@Test

@@ -3,7 +3,7 @@ package nz.co.neo4j.sample.migration.bookshop.data.test.util;
 import javax.annotation.Resource;
 
 import nz.co.neo4j.sample.migration.bookshop.config.InfrastructureContextConfiguration;
-import nz.co.neo4j.sample.migration.bookshop.data.support.CustomerInitialTestDataSetup;
+import nz.co.neo4j.sample.migration.bookshop.data.support.InitialDataSetup;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,8 +19,7 @@ public class RepositoryTestContextConfiguration {
 	private PlatformTransactionManager transactionManager;
 
 	@Bean(initMethod = "initialize")
-	public CustomerInitialTestDataSetup setupCustomerTestData() {
-		return new CustomerInitialTestDataSetup(new TransactionTemplate(
-				transactionManager));
+	public InitialDataSetup initialDataSetup() {
+		return new InitialDataSetup(new TransactionTemplate(transactionManager));
 	}
 }

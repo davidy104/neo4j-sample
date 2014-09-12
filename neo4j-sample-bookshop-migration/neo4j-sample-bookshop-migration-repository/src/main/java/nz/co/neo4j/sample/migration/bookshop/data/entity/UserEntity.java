@@ -13,7 +13,9 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -41,6 +43,10 @@ public class UserEntity implements Serializable {
 	@Temporal(TemporalType.DATE)
 	@Column(name = "CREATE_DATE")
 	private Date createDate;
+
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "PERSON_ID", referencedColumnName = "PERSON_ID")
+	protected PersonEntity person;
 
 	@OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "votePK.user")
 	private List<VoteEntity> votes = Collections.emptyList();
@@ -90,6 +96,14 @@ public class UserEntity implements Serializable {
 
 	public void setCreateDate(Date createDate) {
 		this.createDate = createDate;
+	}
+
+	public PersonEntity getPerson() {
+		return person;
+	}
+
+	public void setPerson(PersonEntity person) {
+		this.person = person;
 	}
 
 	public static Builder getBuilder(String userName, String password,

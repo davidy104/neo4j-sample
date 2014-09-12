@@ -1,4 +1,4 @@
-package nz.co.neo4j.sample.migration.bookshop.ds.test;
+package nz.co.neo4j.sample.migration.bookshop.ds.test.integration;
 
 import static org.junit.Assert.assertNotNull
 import groovy.util.logging.Slf4j
@@ -8,6 +8,7 @@ import javax.annotation.Resource
 import nz.co.neo4j.sample.migration.bookshop.NotFoundException
 import nz.co.neo4j.sample.migration.bookshop.data.User
 import nz.co.neo4j.sample.migration.bookshop.ds.UserDS
+import nz.co.neo4j.sample.migration.bookshop.ds.test.DsTestContextConfiguration;
 
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -49,5 +50,11 @@ public class UserDSIntegrationTest {
 		User update = new User(userName:"UpdateTest")
 		update = userDs.updateUser(1L, update)
 		log.info("update:{} $update")
+	}
+	
+	@Test
+	void testDeleteUserById(){
+		User deletedUser = userDs.deleteUser(1L)
+		log.info("deletedUser:{} $deletedUser")
 	}
 }

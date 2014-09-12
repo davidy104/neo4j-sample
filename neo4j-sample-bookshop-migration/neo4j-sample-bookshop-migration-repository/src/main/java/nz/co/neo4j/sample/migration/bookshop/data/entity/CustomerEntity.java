@@ -3,11 +3,8 @@ package nz.co.neo4j.sample.migration.bookshop.data.entity;
 import java.io.Serializable;
 import java.util.Date;
 
-import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
@@ -19,17 +16,22 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 @Table(name = "T_CUSTOMER")
 @PrimaryKeyJoinColumn(name = "PERSON_ID")
 public class CustomerEntity extends PersonEntity implements Serializable {
-	@OneToOne(fetch = FetchType.LAZY, cascade = { CascadeType.ALL })
-	@JoinColumn(name = "USER_ID", referencedColumnName = "USER_ID")
-	private UserEntity user;
 
-	public UserEntity getUser() {
-		return user;
+	public enum MemberShip {
+		yes(0), no(1);
+		MemberShip(int value) {
+			this.value = value;
+		}
+
+		private final int value;
+
+		public int value() {
+			return value;
+		}
 	}
 
-	public void setUser(UserEntity user) {
-		this.user = user;
-	}
+	@Column(name = "MEMBERSHIP")
+	private Integer membership = MemberShip.no.value();
 
 	public static Builder getBuilder(String lastName, String firstName,
 			String email, Date birthDate) {
@@ -70,7 +72,8 @@ public class CustomerEntity extends PersonEntity implements Serializable {
 		return new ToStringBuilder(this, ToStringStyle.DEFAULT_STYLE)
 				.append("personId", personId).append("lastName", lastName)
 				.append("firstName", firstName).append("email", email)
-				.append("birthDate", birthDate).toString();
+				.append("birthDate", birthDate)
+				.append("membership", membership).toString();
 	}
 
 }

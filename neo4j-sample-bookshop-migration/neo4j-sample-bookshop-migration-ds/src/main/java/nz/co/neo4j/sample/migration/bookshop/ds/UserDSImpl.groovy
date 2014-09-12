@@ -25,17 +25,15 @@ class UserDSImpl implements UserDS{
 	UserRepository userRepository
 
 	@Override
-	@Transactional
+	@Transactional(rollbackFor = DuplicatedException.class)
 	User createUser(final String userName,final String password) {
 		log.debug "createUser start: {} $userName, $password"
 		User created
 		UserEntity addUserEntity
-		try {
-			Predicate predicate = userEntity.userName.eq(userName)
-			addUserEntity = userRepository.findOne(predicate)
-		} catch (e) {
-			throw new DuplicatedException(e)
-		}
+
+		Predicate predicate = userEntity.userName.eq(userName)
+		addUserEntity = userRepository.findOne(predicate)
+
 		if(addUserEntity){
 			throw new DuplicatedException('User[$userName] existed')
 		}
@@ -63,7 +61,7 @@ class UserDSImpl implements UserDS{
 	}
 
 	@Override
-	@Transactional
+	@Transactional(rollbackFor = NotFoundException.class)
 	User updateUser(Long userId, User updatedUser)
 	throws NotFoundException {
 		UserEntity foundEntity
@@ -83,8 +81,9 @@ class UserDSImpl implements UserDS{
 	}
 
 	@Override
-	@Transactional
-	void deleteUser(Long userId) throws NotFoundException {
-		
+	@Transactional(rollbackFor = NotFoundException.class)
+	User deleteUser(Long userId) throws NotFoundException {
+		UserEntity deletedEntity = userRepository.deleteById(userId)
+		return new User(userId:deletedEntity.userId,userName:deletedEntity.userName,createDate:deletedEntity.createDate,password:deletedEntity.password)
 	}
 }

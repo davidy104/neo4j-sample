@@ -9,15 +9,18 @@ import java.util.Random;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
+import nz.co.neo4j.sample.migration.bookshop.data.entity.AuthorEntity;
+import nz.co.neo4j.sample.migration.bookshop.data.entity.CustomerEntity;
 import nz.co.neo4j.sample.migration.bookshop.data.entity.UserEntity;
 import nz.co.neo4j.sample.migration.bookshop.data.util.CustomerBuilder;
 import nz.co.neo4j.sample.migration.bookshop.data.util.EntityBuilder.EntityBuilderManager;
+import nz.co.neo4j.sample.migration.bookshop.data.util.UserBuilder;
 
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionCallback;
 import org.springframework.transaction.support.TransactionTemplate;
 
-public class CustomerInitialTestDataSetup {
+public class InitialDataSetup {
 	private final TransactionTemplate transactionTemplate;
 
 	@PersistenceContext
@@ -28,7 +31,18 @@ public class CustomerInitialTestDataSetup {
 	public static SimpleDateFormat DATE_FORMAT = new SimpleDateFormat(
 			"yyyy-MM-dd");
 
-	public CustomerInitialTestDataSetup(TransactionTemplate transactionTemplate) {
+	private UserEntity user1;
+	private UserEntity user2;
+	private UserEntity user3;
+	private UserEntity user4;
+
+	private CustomerEntity cust1;
+	private CustomerEntity cust2;
+
+	private AuthorEntity author1;
+	private AuthorEntity author2;
+
+	public InitialDataSetup(TransactionTemplate transactionTemplate) {
 		this.transactionTemplate = transactionTemplate;
 	}
 
@@ -38,7 +52,41 @@ public class CustomerInitialTestDataSetup {
 			@Override
 			public Void doInTransaction(TransactionStatus status) {
 				{
-					new CustomerBuilder() {
+					user1 = new UserBuilder() {
+						{
+							this.create(
+									"jordan",
+									getDateFromFormat(DATE_FORMAT, "2013-01-01"));
+						}
+					}.build();
+
+					user2 = new UserBuilder() {
+						{
+							this.create(
+									"joen",
+									getDateFromFormat(DATE_FORMAT, "2013-06-01"));
+						}
+					}.build();
+
+					user3 = new UserBuilder() {
+						{
+							this.create(
+									"chinuaAchebe",
+									getDateFromFormat(DATE_FORMAT, "2014-04-01"));
+						}
+					}.build();
+
+					user4 = new UserBuilder() {
+						{
+							this.create(
+									"HansChristianAndersen",
+									getDateFromFormat(DATE_FORMAT, "2014-01-01"));
+						}
+					}.build();
+
+				}
+				{
+					cust1 = new CustomerBuilder() {
 						{
 							this.create(
 									"Mike",
@@ -46,14 +94,10 @@ public class CustomerInitialTestDataSetup {
 									"mike.jordan@gmail.com",
 									getDateFromFormat(DATE_FORMAT, "1970-01-01"));
 						}
-					}.build().setUser(
-							UserEntity
-									.getBuilder(
-											"jordan",
-											getDateFromFormat(DATE_FORMAT,
-													"2013-01-01")).build());
+					}.build();
+					cust1.setUser(user1);
 
-					new CustomerBuilder() {
+					cust2 = new CustomerBuilder() {
 						{
 							this.create(
 									"Ni",
@@ -61,27 +105,13 @@ public class CustomerInitialTestDataSetup {
 									"ni.joe@gmail.com",
 									getDateFromFormat(DATE_FORMAT, "1990-01-01"));
 						}
-					}.build().setUser(
-							UserEntity
-									.getBuilder(
-											"joen",
-											getDateFromFormat(DATE_FORMAT,
-													"2013-06-01")).build());
+					}.build();
+					cust2.setUser(user2);
+				}
 
-					new CustomerBuilder() {
-						{
-							this.create(
-									"Wu",
-									"Brad",
-									"wu.brad@gmail.com",
-									getDateFromFormat(DATE_FORMAT, "1980-01-01"));
-						}
-					}.build().setUser(
-							UserEntity
-									.getBuilder(
-											"bradw",
-											getDateFromFormat(DATE_FORMAT,
-													"2014-03-01")).build());
+				{
+					user1.setPerson(cust1);
+					user2.setPerson(cust2);
 				}
 				return null;
 			}

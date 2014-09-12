@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -40,7 +39,7 @@ public class PublisherEntity implements Serializable {
 	@Temporal(value = TemporalType.TIME)
 	private Date createTime;
 
-	@OneToMany(fetch = FetchType.LAZY, cascade = { CascadeType.ALL }, mappedBy = "publisher")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "publisher")
 	private List<PublicationEntity> publications = Collections.emptyList();
 
 	public Long getPublisherId() {
@@ -80,6 +79,34 @@ public class PublisherEntity implements Serializable {
 			publications = new ArrayList<>();
 		}
 		publications.add(publicationEntity);
+	}
+
+	public static Builder getBuilder(String name, Date createTime) {
+		return new Builder(name, createTime);
+	}
+
+	public static Builder getBuilder(String name) {
+		return new Builder(name);
+	}
+
+	public static class Builder {
+
+		private PublisherEntity built;
+
+		public Builder(String name, Date createTime) {
+			built = new PublisherEntity();
+			built.name = name;
+			built.createTime = createTime;
+		}
+
+		public Builder(String name) {
+			built = new PublisherEntity();
+			built.name = name;
+		}
+
+		public PublisherEntity build() {
+			return built;
+		}
 	}
 
 	@Override

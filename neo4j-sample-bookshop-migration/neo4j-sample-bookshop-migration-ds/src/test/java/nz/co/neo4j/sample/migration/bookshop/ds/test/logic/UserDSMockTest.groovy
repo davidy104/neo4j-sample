@@ -1,0 +1,79 @@
+package nz.co.neo4j.sample.migration.bookshop.ds.test.logic;
+
+import static nz.co.neo4j.sample.migration.bookshop.data.entity.QUserEntity.userEntity
+import static org.junit.Assert.*
+import static org.mockito.Mockito.times
+import static org.mockito.Mockito.verify
+import static org.mockito.Mockito.verifyNoMoreInteractions
+import static org.mockito.Mockito.when
+import nz.co.neo4j.sample.migration.bookshop.data.User
+import nz.co.neo4j.sample.migration.bookshop.data.entity.UserEntity
+import nz.co.neo4j.sample.migration.bookshop.data.repository.UserRepository
+import nz.co.neo4j.sample.migration.bookshop.ds.UserDSImpl
+
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.ArgumentCaptor
+import org.mockito.InjectMocks
+import org.mockito.Mock
+import org.mockito.runners.MockitoJUnitRunner
+
+
+@RunWith(MockitoJUnitRunner.class)
+class UserDSMockTest {
+
+	@Mock
+	UserRepository userRepository
+
+	@InjectMocks
+	UserDSImpl userDs
+
+	static final String TEST_USERNAME="foo"
+	static final String TEST_PASSWORD="123"
+	static final Long ID = 3L
+
+	@Test
+	public void testCreateUser() {
+		when(userRepository.findOne(userEntity.userName.eq(TEST_USERNAME))).thenReturn(null);
+		ArgumentCaptor<UserEntity> userArgument = ArgumentCaptor.forClass(UserEntity.class);
+
+		userDs.createUser(TEST_USERNAME,TEST_PASSWORD)
+		verify(userRepository, times(1)).findOne(userEntity.userName.eq(TEST_USERNAME))
+		verify(userRepository, times(1)).save(userArgument.capture())
+		verifyNoMoreInteractions(userRepository)
+
+		UserEntity actual = userArgument.getValue();
+		assertEquals(TEST_USERNAME,actual.userName)
+		assertEquals(TEST_PASSWORD,actual.password)
+	}
+
+	@Test
+	void testFindUserByName(){
+		UserEntity expected = new UserEntity()
+		when(userRepository.findOne(userEntity.userName.eq(TEST_USERNAME)))
+				.thenReturn(expected);
+		User actual = userDs.getUser(TEST_USERNAME)
+		verify(userRepository, times(1)).findOne(userEntity.userName.eq(TEST_USERNAME))
+		verifyNoMoreInteractions(userRepository)
+		assertEquals(expected.userName,actual.userName)
+	}
+
+	@Test
+	void testDeleteById(){
+		UserEntity deleted = new UserEntity();
+		when(userRepository.findOne(ID)).thenReturn(deleted)
+		User actual = userDs.deleteUser(ID)
+		verify(userRepository, times(1)).findOne(ID);
+		verify(userRepository, times(1)).deleteById(ID);
+		verifyNoMoreInteractions(userRepository)
+		assertUser(actual,deleted)
+	}
+
+
+	void assertUser(UserEntity entity,User user){
+		assertEquals(entity.userId, user.userId)
+		assertEquals(entity.userName, user.userName)
+		assertEquals(entity.password, user.password)
+		assertEquals(entity.createDate, user.createDate)
+	}
+}

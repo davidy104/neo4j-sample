@@ -54,7 +54,7 @@ public class CustomerRepositorySlowTest {
 		// test initial customer data
 		List<CustomerEntity> customers = customerRepository.findAll();
 		LOGGER.info("size:{} ", customers.size());
-		assertEquals(customers.size(), 3);
+		assertEquals(customers.size(), 2);
 	}
 
 	@Test
@@ -63,6 +63,7 @@ public class CustomerRepositorySlowTest {
 		CustomerEntity found = customerRepository.findOne(1L);
 		assertNotNull(found);
 		LOGGER.info("found: {} ", found);
+		LOGGER.info("customer user:{} ", found.getUser());
 	}
 
 	@Test
@@ -71,8 +72,8 @@ public class CustomerRepositorySlowTest {
 		FactoryExpression<CustomerEntity> factoryExpression = Projections.bean(
 				CustomerEntity.class, customerEntity.lastName,
 				customerEntity.user, customerEntity.birthDate);
-		Predicate predicate = customerEntity.firstName.eq("Brad").and(
-				customerEntity.lastName.eq("Wu"));
+		Predicate predicate = customerEntity.firstName.eq("Jordan").and(
+				customerEntity.lastName.eq("Mike"));
 		CustomerEntity found = customerRepository.findOne(factoryExpression,
 				predicate);
 		assertNotNull(found);
@@ -92,30 +93,28 @@ public class CustomerRepositorySlowTest {
 		// we need to flush after remove, otherwise cascade delete user not
 		// working
 		customerRepository.flush();
-		try {
-			user = userRepository.getOne(userId);
-			LOGGER.info("after customer remove, user: {} ", user);
-			assertNull(user);
-		} catch (Exception e) {
-			LOGGER.error("", e);
-		}
+
+		user = userRepository.findOne(userId);
+		LOGGER.info("after customer remove, user: {} ", user);
+		assertNull(user);
+
 	}
 
 	@Test
 	@Transactional(readOnly = true)
 	public void testMethodNameQuery() {
 		List<CustomerEntity> customers = customerRepository
-				.findByFirstNameStartingWithOrLastNameStartingWith("Bra", "Wu");
+				.findByFirstNameStartingWithOrLastNameStartingWith("Jord", "Mike");
 		LOGGER.info("firstone: {} ", customers.get(0));
 	}
 
 	@Test
-//	@Transactional(readOnly = true)
+	// @Transactional(readOnly = true)
 	public void testQueryAnnotation() {
 		List<CustomerEntity> customers = customerRepository
-				.findCustomers("Brad");
+				.findCustomers("Jordan");
 		LOGGER.info("find one: {} ", customers.get(0));
-//		LOGGER.info("user:{} ",customers.get(0).getUser());
+		// LOGGER.info("user:{} ",customers.get(0).getUser());
 	}
 
 }

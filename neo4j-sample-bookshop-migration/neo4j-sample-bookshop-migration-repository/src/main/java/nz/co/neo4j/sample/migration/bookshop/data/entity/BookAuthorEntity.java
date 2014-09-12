@@ -1,5 +1,7 @@
 package nz.co.neo4j.sample.migration.bookshop.data.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.AssociationOverride;
 import javax.persistence.AssociationOverrides;
 import javax.persistence.Column;
@@ -12,12 +14,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+@SuppressWarnings("serial")
 @Entity
 @Table(name = "T_BOOK_AUTHOR")
 @AssociationOverrides({
 		@AssociationOverride(name = "bookAuthorPK.book", joinColumns = @JoinColumn(name = "BOOK_ID")),
 		@AssociationOverride(name = "bookAuthorPK.author", joinColumns = @JoinColumn(name = "PERSON_ID")) })
-public class BookAuthorEntity {
+public class BookAuthorEntity implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "BOOK_AUTHOR_ID", insertable = false, updatable = false)
