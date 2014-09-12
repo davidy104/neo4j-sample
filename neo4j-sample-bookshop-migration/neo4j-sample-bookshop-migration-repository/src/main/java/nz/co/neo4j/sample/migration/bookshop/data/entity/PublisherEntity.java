@@ -1,10 +1,10 @@
 package nz.co.neo4j.sample.migration.bookshop.data.entity;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,7 +26,6 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 @Entity
 @Table(name = "T_PUBLISHER")
 public class PublisherEntity implements Serializable {
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "PUBLISHER_ID", insertable = false, updatable = false)
@@ -40,7 +39,7 @@ public class PublisherEntity implements Serializable {
 	private Date createTime;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "publisher")
-	private List<PublicationEntity> publications = Collections.emptyList();
+	private Set<BookEntity> books = Collections.emptySet();
 
 	public Long getPublisherId() {
 		return publisherId;
@@ -66,19 +65,19 @@ public class PublisherEntity implements Serializable {
 		this.createTime = createTime;
 	}
 
-	public List<PublicationEntity> getPublications() {
-		return publications;
+	public Set<BookEntity> getBooks() {
+		return books;
 	}
 
-	public void setPublications(List<PublicationEntity> publications) {
-		this.publications = publications;
+	public void setBooks(Set<BookEntity> books) {
+		this.books = books;
 	}
 
-	public void addPublication(final PublicationEntity publicationEntity) {
-		if (publications.isEmpty()) {
-			publications = new ArrayList<>();
+	public void addBook(final BookEntity book) {
+		if (this.books.isEmpty()) {
+			this.books = new HashSet<>();
 		}
-		publications.add(publicationEntity);
+		this.books.add(book);
 	}
 
 	public static Builder getBuilder(String name, Date createTime) {
