@@ -12,6 +12,7 @@ import javax.persistence.PersistenceContext;
 import nz.co.neo4j.sample.migration.bookshop.data.entity.AuthorEntity;
 import nz.co.neo4j.sample.migration.bookshop.data.entity.CustomerEntity;
 import nz.co.neo4j.sample.migration.bookshop.data.entity.UserEntity;
+import nz.co.neo4j.sample.migration.bookshop.data.util.AuthorBuilder;
 import nz.co.neo4j.sample.migration.bookshop.data.util.CustomerBuilder;
 import nz.co.neo4j.sample.migration.bookshop.data.util.EntityBuilder.EntityBuilderManager;
 import nz.co.neo4j.sample.migration.bookshop.data.util.UserBuilder;
@@ -51,6 +52,7 @@ public class InitialDataSetup {
 		this.transactionTemplate.execute(new TransactionCallback<Void>() {
 			@Override
 			public Void doInTransaction(TransactionStatus status) {
+				// initial Users
 				{
 					user1 = new UserBuilder() {
 						{
@@ -85,6 +87,7 @@ public class InitialDataSetup {
 					}.build();
 
 				}
+				// initial Customers
 				{
 					cust1 = new CustomerBuilder() {
 						{
@@ -108,11 +111,38 @@ public class InitialDataSetup {
 					}.build();
 					cust2.setUser(user2);
 				}
-
+				// bind user with customer
 				{
 					user1.setPerson(cust1);
 					user2.setPerson(cust2);
 				}
+
+				// initial Authors
+				{
+					author1 = new AuthorBuilder() {
+						{
+							this.create("Achebe", "Chinua",
+									"Chinua.Achebe@gmail.com", null).build();
+						}
+					}.build();
+					author1.setUser(user3);
+
+					author2 = new AuthorBuilder() {
+						{
+							this.create("Andersen", "Hans Christian",
+									"HansChristian.Andersen@gmail.com", null)
+									.build();
+						}
+					}.build();
+					author2.setUser(user4);
+				}
+
+				// bind user with authors
+				{
+					user3.setPerson(author1);
+					user4.setPerson(author2);
+				}
+
 				return null;
 			}
 		});
