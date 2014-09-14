@@ -1,0 +1,12 @@
+{
+	"statements":[
+		{
+			"statement":"CREATE (b:Book {title:{bTitle},tags:{bTags}})<-[:AuthorOf]-(:Person{name:{pName}}) RETURN b",
+			"parameters":{
+				"bTitle":"Things Fall Apart",
+				"bTags":"["novel"]",
+				"pName":"Chinua Achebe"
+			}
+		}
+	]
+}

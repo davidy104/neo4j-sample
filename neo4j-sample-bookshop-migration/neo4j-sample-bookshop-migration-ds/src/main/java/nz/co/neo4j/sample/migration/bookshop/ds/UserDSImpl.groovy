@@ -91,10 +91,4 @@ class UserDSImpl implements UserDS{
 		userRepository.save(foundEntity)
 		return new User(userId:foundEntity.userId,userName:foundEntity.userName,createDate:foundEntity.createDate)
 	}
-
-	@Override
-	@Transactional(rollbackFor = NotFoundException.class)
-	void deleteUser(final Long userId) throws NotFoundException {
-		userRepository.deleteById(userId)
-	}
 }
