@@ -6,6 +6,7 @@ import static org.mockito.Mockito.times
 import static org.mockito.Mockito.verify
 import static org.mockito.Mockito.verifyNoMoreInteractions
 import static org.mockito.Mockito.when
+import nz.co.neo4j.sample.migration.bookshop.NotFoundException
 import nz.co.neo4j.sample.migration.bookshop.data.User
 import nz.co.neo4j.sample.migration.bookshop.data.entity.UserEntity
 import nz.co.neo4j.sample.migration.bookshop.data.repository.UserRepository
@@ -17,6 +18,8 @@ import org.mockito.ArgumentCaptor
 import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.runners.MockitoJUnitRunner
+
+
 
 
 @RunWith(MockitoJUnitRunner.class)
@@ -52,26 +55,29 @@ class UserDSMockTest {
 		UserEntity expected = new UserEntity()
 		when(userRepository.findOne(userEntity.userName.eq(TEST_USERNAME)))
 				.thenReturn(expected);
-		User actual = userDs.getUser(TEST_USERNAME)
+		User actual = userDs.getUserByName(TEST_USERNAME)
 		verify(userRepository, times(1)).findOne(userEntity.userName.eq(TEST_USERNAME))
 		verifyNoMoreInteractions(userRepository)
 		assertEquals(expected.userName,actual.userName)
 	}
 
+	@Test(expected = NotFoundException.class)
+	void testFindByIdWhenIsNotFound(){
+		when(userRepository.findOne(ID)).thenReturn(null)
+		userDs.getUserById(ID)
+		verify(userRepository, times(1)).findOne(ID)
+		verifyNoMoreInteractions(userRepository)
+	}
+
 	@Test
 	void testDeleteById(){
-		UserEntity deleted = new UserEntity();
-		when(userRepository.findOne(ID)).thenReturn(deleted)
-		User actual = userDs.deleteUser(ID)
-		verify(userRepository, times(1)).findOne(ID);
-		verify(userRepository, times(1)).deleteById(ID);
+		userDs.deleteUser(ID)
+		verify(userRepository, times(1)).deleteById(ID)
 		verifyNoMoreInteractions(userRepository)
-		assertUser(actual,deleted)
 	}
 
 
 	void assertUser(UserEntity entity,User user){
-		assertEquals(entity.userId, user.userId)
 		assertEquals(entity.userName, user.userName)
 		assertEquals(entity.password, user.password)
 		assertEquals(entity.createDate, user.createDate)

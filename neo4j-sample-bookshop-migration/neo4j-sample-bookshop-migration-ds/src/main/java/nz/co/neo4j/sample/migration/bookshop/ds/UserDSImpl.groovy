@@ -49,8 +49,20 @@ class UserDSImpl implements UserDS{
 		return null
 	}
 
+
+
 	@Override
-	public User getUser(final String userName) throws NotFoundException {
+	public User getUserById(final Long userId) throws NotFoundException {
+		UserEntity foundEntity
+		foundEntity = userRepository.findOne(userId)
+		if(!foundEntity){
+			throw new NotFoundException('User not found by id[$userId]')
+		}
+		return new User(userId:foundEntity.userId,userName:foundEntity.userName,createDate:foundEntity.createDate)
+	}
+
+	@Override
+	public User getUserByName(final String userName) throws NotFoundException {
 		UserEntity foundEntity
 		Predicate predicate = userEntity.userName.eq(userName)
 		foundEntity = userRepository.findOne(predicate)
@@ -82,8 +94,7 @@ class UserDSImpl implements UserDS{
 
 	@Override
 	@Transactional(rollbackFor = NotFoundException.class)
-	User deleteUser(Long userId) throws NotFoundException {
-		UserEntity deletedEntity = userRepository.deleteById(userId)
-		return new User(userId:deletedEntity.userId,userName:deletedEntity.userName,createDate:deletedEntity.createDate,password:deletedEntity.password)
+	void deleteUser(final Long userId) throws NotFoundException {
+		userRepository.deleteById(userId)
 	}
 }

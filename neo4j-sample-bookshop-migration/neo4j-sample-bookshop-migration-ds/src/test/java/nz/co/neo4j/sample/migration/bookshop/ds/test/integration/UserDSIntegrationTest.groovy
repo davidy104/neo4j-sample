@@ -35,26 +35,25 @@ public class UserDSIntegrationTest {
 
 	@Test
 	void testFindByName(){
-		User found = userDs.getUser("jordan")
+		User found = userDs.getUserByName("jordan")
 		assertNotNull(found)
 		log.info("found:{} $found")
 	}
 
 	@Test(expected=NotFoundException.class)
 	void testFindByNameNotFound(){
-		User found = userDs.getUser("DAVVV")
+		User found = userDs.getUserByName("DAVVV")
 	}
-	
+
 	@Test
 	void testUpdateUser(){
 		User update = new User(userName:"UpdateTest")
 		update = userDs.updateUser(1L, update)
 		log.info("update:{} $update")
 	}
-	
+
 	@Test
 	void testDeleteUserById(){
-		User deletedUser = userDs.deleteUser(1L)
-		log.info("deletedUser:{} $deletedUser")
+		userDs.deleteUser(1L)
 	}
 }
