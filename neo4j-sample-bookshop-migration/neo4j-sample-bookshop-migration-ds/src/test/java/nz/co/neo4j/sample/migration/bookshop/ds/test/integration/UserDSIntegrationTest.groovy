@@ -51,9 +51,4 @@ public class UserDSIntegrationTest {
 		update = userDs.updateUser(1L, update)
 		log.info("update:{} $update")
 	}
-
-	@Test
-	void testDeleteUserById(){
-		userDs.deleteUser(1L)
-	}
 }

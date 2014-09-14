@@ -20,8 +20,6 @@ import org.mockito.Mock
 import org.mockito.runners.MockitoJUnitRunner
 
 
-
-
 @RunWith(MockitoJUnitRunner.class)
 class UserDSMockTest {
 
@@ -69,12 +67,12 @@ class UserDSMockTest {
 		verifyNoMoreInteractions(userRepository)
 	}
 
-	@Test
-	void testDeleteById(){
-		userDs.deleteUser(ID)
-		verify(userRepository, times(1)).deleteById(ID)
-		verifyNoMoreInteractions(userRepository)
-	}
+//	@Test
+//	void testDeleteById(){
+//		userDs.deleteUser(ID)
+//		verify(userRepository, times(1)).deleteById(ID)
+//		verifyNoMoreInteractions(userRepository)
+//	}
 
 
 	void assertUser(UserEntity entity,User user){

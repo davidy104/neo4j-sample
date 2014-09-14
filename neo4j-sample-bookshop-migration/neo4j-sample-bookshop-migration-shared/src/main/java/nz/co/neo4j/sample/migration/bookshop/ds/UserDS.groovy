@@ -9,5 +9,4 @@ interface UserDS {
 	User getUserById(Long userId) throws NotFoundException
 	User getUserByName(String userName) throws NotFoundException
 	User updateUser(Long userId,User updatedUser) throws NotFoundException
-	void deleteUser(Long userId) throws NotFoundException
 }
