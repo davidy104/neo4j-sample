@@ -35,9 +35,18 @@ public class OpenTransactionalIntegrationTest {
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(OpenTransactionalIntegrationTest.class);
 
-	private static final String TEST_TRANS_CREATE_NODES = "/opentx/transactionalNodeCreate.json";
-	private static final String TEST_QUERY_RELATION = "/transactional/query-relation.json";
-	private static final String TEST_DELETE_RELATION = "/transactional/delete-relation.json";
+	private static final String TEST_OPEN_TRANS_CREATE_NODES = "/opentx/transactionalNodeCreate1.json";
+	private static final String TEST_TRANS_CREATE_NODES = "/opentx/transactionalNodeCreate2.json";
+	
+	private static final String TEST_QUERY_RELATION = "/opentx/queryRelation.json";
+	private static final String TEST_DELETE_RELATION = "/opentx/deleteRelation.json";
+
+	// after open transaction, need commitUri for other operations (for
+	// example,commit)
+	private String commitUri;
+
+	// for rollback
+	private String location;
 
 	@Autowired
 	private Client jerseyClient;
@@ -45,7 +54,7 @@ public class OpenTransactionalIntegrationTest {
 	@Test
 	public void test() throws Exception {
 		URL url = OpenTransactionalIntegrationTest.class
-				.getResource(TEST_TRANS_CREATE_NODES);
+				.getResource(TEST_OPEN_TRANS_CREATE_NODES);
 		Path resPath = Paths.get(url.toURI());
 		String jsonBody = new String(java.nio.file.Files.readAllBytes(resPath),
 				"UTF8");
@@ -64,8 +73,8 @@ public class OpenTransactionalIntegrationTest {
 					+ mapentry.getValue());
 		}
 
-		// String location = headers.get("Location Value").get(0);
-		// LOGGER.info("location: {} ", location);
+		String location = headers.get("Location Value").get(0);
+		LOGGER.info("location: {} ", location);
 		String respStr = JerseyClientUtil.getResponsePayload(response);
 		LOGGER.info("respStr: {} ", respStr);
 
@@ -74,11 +83,12 @@ public class OpenTransactionalIntegrationTest {
 			LOGGER.info("Key : " + entry.getKey() + " Value : "
 					+ entry.getValue());
 		}
-
 		String commitUri = (String) respMap.get("commit");
 		LOGGER.info("commitUri: {} ", commitUri);
 		this.commit(commitUri, null);
 	}
+	
+	
 
 	private void commit(final String commitUri, String content)
 			throws Exception {
@@ -91,4 +101,12 @@ public class OpenTransactionalIntegrationTest {
 		LOGGER.info("respStr: {} ", respStr);
 	}
 
+	private void rollback(final String location) throws Exception {
+		WebResource webResource = jerseyClient.resource(location);
+		ClientResponse response = webResource
+				.accept(MediaType.APPLICATION_JSON)
+				.type(MediaType.APPLICATION_JSON).delete(ClientResponse.class);
+		String respStr = JerseyClientUtil.getResponsePayload(response);
+		LOGGER.info("respStr: {} ", respStr);
+	}
 }
