@@ -1,0 +1,19 @@
+{
+	"statements":[
+		{
+			"statement":"MATCH (b:Book {title:{title},tags:{tags}}) DELETE b",
+			"parameters":{
+				"title":"Things Fall Apart",
+				"tags":[
+					"novel"
+				]
+			}
+		},
+		{
+			"statement":"MATCH (p:Person{name:{name}}) DELETE p",
+			"parameters":{
+				"name":"Fyodor Dostoevsky"
+			}
+		}
+	]
+}
