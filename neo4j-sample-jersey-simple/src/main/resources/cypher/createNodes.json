@@ -1,0 +1,24 @@
+{
+	"statements":[
+		{
+			"statement":"CREATE (b:Book {title:{title},tags:{tags}})<-[a:AuthorOf]-(p:Person{name:{name}}) RETURN b,a,p",
+			"parameters":{
+				"title":"Things Fall Apart",
+				"tags":[
+					"novel"
+				],
+				"name":"Fyodor Dostoevsky"
+			}
+		},
+		{
+			"statement":"MATCH (b:Book {title:{title},tags:{tags}}) WITH b CREATE (b) <-[v:Votes{score: round(rand()*3) + 2 }]- (u:User) RETURN b,v,u",
+			"parameters":{
+				"title":"Things Fall Apart",
+				"tags":[
+					"novel"
+				],
+				"name":"Fyodor Dostoevsky"
+			}
+		}
+	]
+}
