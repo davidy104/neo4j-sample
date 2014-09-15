@@ -36,7 +36,7 @@ public class CypherIntegrationTest {
 
 	private static final String TEST_CREATENODE = "/cypher/createNodes.json";
 	private static final String TEST_QUERY_PERSON = "/cypher/queryPerson.json";
-
+	private static final String TEST_DELETE = "/cypher/deleteNode.json";
 	@Autowired
 	private Client jerseyClient;
 
@@ -70,7 +70,6 @@ public class CypherIntegrationTest {
 			LOGGER.info("Content Key : " + entry.getKey() + "Content Value : "
 					+ entry.getValue());
 		}
-
 		testQuery();
 	}
 
@@ -90,5 +89,22 @@ public class CypherIntegrationTest {
 		String respStr = JerseyClientUtil.getResponsePayload(response);
 		LOGGER.info("person query: {} ", respStr);
 
+	}
+
+	@Test
+	public void testDelete() throws Exception {
+		Path resPath = Paths.get(OpenTransactionalIntegrationTest.class
+				.getResource(TEST_DELETE).toURI());
+		String deleteJson = new String(
+				java.nio.file.Files.readAllBytes(resPath), "UTF8");
+
+		WebResource webResource = jerseyClient.resource(HTTP_URI).path(
+				"transaction/commit");
+		ClientResponse response = webResource
+				.accept(MediaType.APPLICATION_JSON)
+				.type(MediaType.APPLICATION_JSON)
+				.post(ClientResponse.class, deleteJson);
+		String respStr = JerseyClientUtil.getResponsePayload(response);
+		LOGGER.info("delete: {} ", respStr);
 	}
 }

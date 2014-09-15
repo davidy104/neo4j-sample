@@ -1,0 +1,46 @@
+{
+	"statements":[
+		{
+			"statement":"MATCH (b:Book {title:{title},tags:{tags}}) DELETE b",
+			"parameters":{
+				"title":"Things Fall Apart",
+				"tags":[
+					"novel"
+				]
+			}
+		},
+		{
+			"statement":"MATCH (p:Person{name:{name}}) DELETE p",
+			"parameters":{
+				"name":"Fyodor Dostoevsky"
+			}
+		}
+		{
+			"statement":"MATCH (b:Book {title:{title},tags:{tags}}) DELETE b",
+			"parameters":{
+				"title":"Pride and Prejudice",
+				"tags":[
+					"novel"
+				]
+			}
+		},
+		{
+			"statement":"MATCH (p:Person{name:{name}}) DELETE p",
+			"parameters":{
+				"name":"Jane Austen"
+			}
+		},
+		{
+			"statement":"MATCH (u:User{name:{name}}) DELETE u",
+			"parameters":{
+				"name":"dav"
+			}
+		},
+		{
+			"statement":"MATCH (u:User{name:{name}}) DELETE u",
+			"parameters":{
+				"name":"mike"
+			}
+		}
+	]
+}

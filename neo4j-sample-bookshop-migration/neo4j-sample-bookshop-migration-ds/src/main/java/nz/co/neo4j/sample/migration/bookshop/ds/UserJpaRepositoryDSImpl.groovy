@@ -16,10 +16,10 @@ import org.springframework.transaction.annotation.Transactional
 
 import com.mysema.query.types.Predicate
 
-@Service
+@Service("userJpaRepositoryDs")
 @Slf4j
 @Transactional(readOnly = true)
-class UserDSImpl implements UserDS{
+class UserJpaRepositoryDSImpl implements UserDS{
 
 	@Resource
 	UserRepository userRepository

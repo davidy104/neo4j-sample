@@ -9,8 +9,10 @@ class Book {
 	Long bookId
 	String title
 	int pages
-	String[] tags
-	List<Person> authors
+	String[] tags = []
+	Set<Author> authors = []
 	@Delegate
 	Publication publication = new Publication()
+
+	Set<Vote> votes = []
 }

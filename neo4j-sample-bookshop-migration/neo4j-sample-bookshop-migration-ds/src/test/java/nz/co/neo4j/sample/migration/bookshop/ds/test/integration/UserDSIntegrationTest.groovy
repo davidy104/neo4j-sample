@@ -24,31 +24,31 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner
 public class UserDSIntegrationTest {
 
 	@Resource
-	UserDS userDs
+	UserDS userJpaRepositoryDs
 
 	@Test
 	void testCreate() {
-		User added = userDs.createUser("Test01","123456");
+		User added = userJpaRepositoryDs.createUser("Test01","123456");
 		assertNotNull(added)
 		log.info("added:{} $added")
 	}
 
 	@Test
 	void testFindByName(){
-		User found = userDs.getUserByName("jordan")
+		User found = userJpaRepositoryDs.getUserByName("jordan")
 		assertNotNull(found)
 		log.info("found:{} $found")
 	}
 
 	@Test(expected=NotFoundException.class)
 	void testFindByNameNotFound(){
-		User found = userDs.getUserByName("DAVVV")
+		User found = userJpaRepositoryDs.getUserByName("DAVVV")
 	}
 
 	@Test
 	void testUpdateUser(){
 		User update = new User(userName:"UpdateTest")
-		update = userDs.updateUser(1L, update)
+		update = userJpaRepositoryDs.updateUser(1L, update)
 		log.info("update:{} $update")
 	}
 }

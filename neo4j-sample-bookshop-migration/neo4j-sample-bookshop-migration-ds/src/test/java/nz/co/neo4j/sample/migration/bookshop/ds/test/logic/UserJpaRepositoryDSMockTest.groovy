@@ -10,7 +10,7 @@ import nz.co.neo4j.sample.migration.bookshop.NotFoundException
 import nz.co.neo4j.sample.migration.bookshop.data.User
 import nz.co.neo4j.sample.migration.bookshop.data.entity.UserEntity
 import nz.co.neo4j.sample.migration.bookshop.data.repository.UserRepository
-import nz.co.neo4j.sample.migration.bookshop.ds.UserDSImpl
+import nz.co.neo4j.sample.migration.bookshop.ds.UserJpaRepositoryDSImpl
 
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -21,13 +21,13 @@ import org.mockito.runners.MockitoJUnitRunner
 
 
 @RunWith(MockitoJUnitRunner.class)
-class UserDSMockTest {
+class UserJpaRepositoryDSMockTest {
 
 	@Mock
 	UserRepository userRepository
 
 	@InjectMocks
-	UserDSImpl userDs
+	UserJpaRepositoryDSImpl userJpaRepositoryDs
 
 	static final String TEST_USERNAME="foo"
 	static final String TEST_PASSWORD="123"
@@ -38,7 +38,7 @@ class UserDSMockTest {
 		when(userRepository.findOne(userEntity.userName.eq(TEST_USERNAME))).thenReturn(null);
 		ArgumentCaptor<UserEntity> userArgument = ArgumentCaptor.forClass(UserEntity.class);
 
-		userDs.createUser(TEST_USERNAME,TEST_PASSWORD)
+		userJpaRepositoryDs.createUser(TEST_USERNAME,TEST_PASSWORD)
 		verify(userRepository, times(1)).findOne(userEntity.userName.eq(TEST_USERNAME))
 		verify(userRepository, times(1)).save(userArgument.capture())
 		verifyNoMoreInteractions(userRepository)
@@ -53,7 +53,7 @@ class UserDSMockTest {
 		UserEntity expected = new UserEntity()
 		when(userRepository.findOne(userEntity.userName.eq(TEST_USERNAME)))
 				.thenReturn(expected);
-		User actual = userDs.getUserByName(TEST_USERNAME)
+		User actual = userJpaRepositoryDs.getUserByName(TEST_USERNAME)
 		verify(userRepository, times(1)).findOne(userEntity.userName.eq(TEST_USERNAME))
 		verifyNoMoreInteractions(userRepository)
 		assertEquals(expected.userName,actual.userName)
@@ -62,17 +62,17 @@ class UserDSMockTest {
 	@Test(expected = NotFoundException.class)
 	void testFindByIdWhenIsNotFound(){
 		when(userRepository.findOne(ID)).thenReturn(null)
-		userDs.getUserById(ID)
+		userJpaRepositoryDs.getUserById(ID)
 		verify(userRepository, times(1)).findOne(ID)
 		verifyNoMoreInteractions(userRepository)
 	}
 
-//	@Test
-//	void testDeleteById(){
-//		userDs.deleteUser(ID)
-//		verify(userRepository, times(1)).deleteById(ID)
-//		verifyNoMoreInteractions(userRepository)
-//	}
+	//	@Test
+	//	void testDeleteById(){
+	//		userJpaRepositoryDs.deleteUser(ID)
+	//		verify(userRepository, times(1)).deleteById(ID)
+	//		verifyNoMoreInteractions(userRepository)
+	//	}
 
 
 	void assertUser(UserEntity entity,User user){
