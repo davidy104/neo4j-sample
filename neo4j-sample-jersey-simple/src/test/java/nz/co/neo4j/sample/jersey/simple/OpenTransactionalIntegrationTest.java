@@ -35,14 +35,15 @@ public class OpenTransactionalIntegrationTest {
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(OpenTransactionalIntegrationTest.class);
 
-	private static final String TEST_TRANS_CREATE_NODES = "/transactional/transactionalNodeCreate.json";
+	private static final String TEST_TRANS_CREATE_NODES = "/opentx/transactionalNodeCreate.json";
 	private static final String TEST_QUERY_RELATION = "/transactional/query-relation.json";
 	private static final String TEST_DELETE_RELATION = "/transactional/delete-relation.json";
+
 	@Autowired
 	private Client jerseyClient;
 
 	@Test
-	public void testTransactionalCreateWithSingleHttpRequest() throws Exception {
+	public void test() throws Exception {
 		URL url = OpenTransactionalIntegrationTest.class
 				.getResource(TEST_TRANS_CREATE_NODES);
 		Path resPath = Paths.get(url.toURI());
@@ -51,7 +52,7 @@ public class OpenTransactionalIntegrationTest {
 		LOGGER.info("jsonBody: {} ", jsonBody);
 
 		WebResource webResource = jerseyClient.resource(HTTP_URI).path(
-				"transaction/commit");
+				"transaction");
 		ClientResponse response = webResource
 				.accept(MediaType.APPLICATION_JSON)
 				.type(MediaType.APPLICATION_JSON)
@@ -74,77 +75,20 @@ public class OpenTransactionalIntegrationTest {
 					+ entry.getValue());
 		}
 
-		url = OpenTransactionalIntegrationTest.class
-				.getResource(TEST_QUERY_RELATION);
-		resPath = Paths.get(url.toURI());
-		jsonBody = new String(java.nio.file.Files.readAllBytes(resPath), "UTF8");
-		LOGGER.info("jsonBody: {} ", jsonBody);
-
-		webResource = jerseyClient.resource(HTTP_URI).path("cypher");
-		response = webResource.accept(MediaType.APPLICATION_JSON)
-				.type(MediaType.APPLICATION_JSON)
-				.post(ClientResponse.class, jsonBody);
-		respStr = JerseyClientUtil.getResponsePayload(response);
-		LOGGER.info("respStr:{} ", respStr);
-
-		// delete relationship
-		url = OpenTransactionalIntegrationTest.class
-				.getResource(TEST_DELETE_RELATION);
-		resPath = Paths.get(url.toURI());
-		jsonBody = new String(java.nio.file.Files.readAllBytes(resPath), "UTF8");
-		LOGGER.info("jsonBody: {} ", jsonBody);
-		webResource = jerseyClient.resource(HTTP_URI).path("cypher");
-		response = webResource.accept(MediaType.APPLICATION_JSON)
-				.type(MediaType.APPLICATION_JSON)
-				.post(ClientResponse.class, jsonBody);
-
-		respStr = JerseyClientUtil.getResponsePayload(response);
-		LOGGER.info("respStr:{} ", respStr);
+		String commitUri = (String) respMap.get("commit");
+		LOGGER.info("commitUri: {} ", commitUri);
+		this.commit(commitUri, null);
 	}
-	
-	
 
-	@Test
-	public void testTransactionalCreateNodes() throws Exception {
-		final URL url = OpenTransactionalIntegrationTest.class
-				.getResource(TEST_TRANS_CREATE_NODES);
-		final Path resPath = Paths.get(url.toURI());
-		final String jsonBody = new String(
-				java.nio.file.Files.readAllBytes(resPath), "UTF8");
-		LOGGER.info("jsonBody: {} ", jsonBody);
-		// begin
-		WebResource webResource = jerseyClient.resource(HTTP_URI).path(
-				"transaction");
+	private void commit(final String commitUri, String content)
+			throws Exception {
+		WebResource webResource = jerseyClient.resource(commitUri);
 		ClientResponse response = webResource
 				.accept(MediaType.APPLICATION_JSON)
 				.type(MediaType.APPLICATION_JSON)
-				.post(ClientResponse.class, jsonBody);
-		MultivaluedMap<String, String> headers = response.getHeaders();
-		// Set<Map.Entry<String, List<String>>> headerSet = headers.entrySet();
-		// for (Map.Entry<String, List<String>> mapentry : headerSet) {
-		// LOGGER.info("Key : " + mapentry.getKey() + " Value : "
-		// + mapentry.getValue());
-		// }
-
-		String location = headers.get("Location Value").get(0);
-		LOGGER.info("location: {} ", location);
+				.post(ClientResponse.class, content);
 		String respStr = JerseyClientUtil.getResponsePayload(response);
 		LOGGER.info("respStr: {} ", respStr);
-
-		Map<String, Object> respMap = TestUtil.jsonToMap(respStr);
-		// for (Map.Entry<String, Object> entry : respMap.entrySet()) {
-		// LOGGER.info("Key : " + entry.getKey() + " Value : "
-		// + entry.getValue());
-		// }
-
-		String commitUri = (String) respMap.get("commit Value");
-		// commit
-
-		webResource = jerseyClient.resource(commitUri);
-		response = webResource.accept(MediaType.APPLICATION_JSON)
-				.type(MediaType.APPLICATION_JSON)
-				.post(ClientResponse.class, jsonBody);
-
 	}
 
 }

@@ -1,0 +1,13 @@
+{
+	"statements":[
+		{
+			"statement":"CREATE (b:Book {title:\"Things Fall Apart\",tags:[\"novel\"]})<-[a:AuthorOf]-(p:Person{name:\"Fyodor Dostoevsky\"}) RETURN b,a,p",
+			"resultDataContents":[
+				"row",
+				"graph"
+			]
+			
+		}
+		
+	]
+}

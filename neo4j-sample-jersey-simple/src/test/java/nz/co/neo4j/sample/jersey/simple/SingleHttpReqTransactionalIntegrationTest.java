@@ -36,11 +36,11 @@ public class SingleHttpReqTransactionalIntegrationTest {
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(SingleHttpReqTransactionalIntegrationTest.class);
 
-	private static final String TEST_TRANS_CREATE_NODES = "/transactional/transactionalNodeCreate.json";
-	private static final String TEST_TRANS_DELETE_NODES = "/transactional/transactionalNodeDelete.json";
-	private static final String TEST_QUERY_RELATION = "/transactional/queryRelation.json";
-	private static final String TEST_QUERY_PERSON = "/transactional/queryPerson.json";
-	private static final String TEST_DELETE_RELATION = "/transactional/deleteRelation.json";
+	private static final String TEST_TRANS_CREATE_NODES = "/singletx/transactionalNodeCreate.json";
+	private static final String TEST_TRANS_DELETE_NODES = "/singletx/transactionalNodeDelete.json";
+	private static final String TEST_QUERY_RELATION = "/singletx/queryRelation.json";
+	private static final String TEST_QUERY_PERSON = "/singletx/queryPerson.json";
+	private static final String TEST_DELETE_RELATION = "/singletx/deleteRelation.json";
 
 	private String createNodesJson;
 	private String deleteNodesJson;
@@ -57,43 +57,27 @@ public class SingleHttpReqTransactionalIntegrationTest {
 				.getResource(TEST_TRANS_CREATE_NODES).toURI());
 		createNodesJson = new String(java.nio.file.Files.readAllBytes(resPath),
 				"UTF8");
-		resPath = Paths.get(OpenTransactionalIntegrationTest.class
-				.getResource(TEST_TRANS_DELETE_NODES).toURI());
+		resPath = Paths.get(OpenTransactionalIntegrationTest.class.getResource(
+				TEST_TRANS_DELETE_NODES).toURI());
 		deleteNodesJson = new String(java.nio.file.Files.readAllBytes(resPath),
 				"UTF8");
-		resPath = Paths.get(OpenTransactionalIntegrationTest.class
-				.getResource(TEST_QUERY_RELATION).toURI());
+		resPath = Paths.get(OpenTransactionalIntegrationTest.class.getResource(
+				TEST_QUERY_RELATION).toURI());
 		queryRelationshipJson = new String(
 				java.nio.file.Files.readAllBytes(resPath), "UTF8");
-		resPath = Paths.get(OpenTransactionalIntegrationTest.class
-				.getResource(TEST_DELETE_RELATION).toURI());
+		resPath = Paths.get(OpenTransactionalIntegrationTest.class.getResource(
+				TEST_DELETE_RELATION).toURI());
 		deleteRelationshipJson = new String(
 				java.nio.file.Files.readAllBytes(resPath), "UTF8");
-		resPath = Paths.get(OpenTransactionalIntegrationTest.class
-				.getResource(TEST_QUERY_PERSON).toURI());
+		resPath = Paths.get(OpenTransactionalIntegrationTest.class.getResource(
+				TEST_QUERY_PERSON).toURI());
 		queryPersonJson = new String(java.nio.file.Files.readAllBytes(resPath),
 				"UTF8");
 	}
 
 	@After
 	public void cleanUp() throws Exception {
-		WebResource webResource = jerseyClient.resource(HTTP_URI)
-				.path("cypher");
-		ClientResponse response = webResource
-				.accept(MediaType.APPLICATION_JSON)
-				.type(MediaType.APPLICATION_JSON)
-				.post(ClientResponse.class, deleteRelationshipJson);
-
-		String respStr = JerseyClientUtil.getResponsePayload(response);
-		LOGGER.info("delete relation:{} ", respStr);
-		// delete nodes
-		webResource = jerseyClient.resource(HTTP_URI)
-				.path("transaction/commit");
-		response = webResource.accept(MediaType.APPLICATION_JSON)
-				.type(MediaType.APPLICATION_JSON)
-				.post(ClientResponse.class, deleteNodesJson);
-		respStr = JerseyClientUtil.getResponsePayload(response);
-		LOGGER.info("delete nodes: {} ", respStr);
+//		testDeleteAll();
 	}
 
 	@Test
@@ -122,11 +106,18 @@ public class SingleHttpReqTransactionalIntegrationTest {
 					+ entry.getValue());
 		}
 
-		webResource = jerseyClient.resource(HTTP_URI).path("cypher");
-		response = webResource.accept(MediaType.APPLICATION_JSON)
+		testQuery();
+	}
+
+	@Test
+	public void testQuery() throws Exception {
+		WebResource webResource = jerseyClient.resource(HTTP_URI)
+				.path("cypher");
+		ClientResponse response = webResource
+				.accept(MediaType.APPLICATION_JSON)
 				.type(MediaType.APPLICATION_JSON)
 				.post(ClientResponse.class, queryRelationshipJson);
-		respStr = JerseyClientUtil.getResponsePayload(response);
+		String respStr = JerseyClientUtil.getResponsePayload(response);
 		LOGGER.info("relationship query: {} ", respStr);
 
 		webResource = jerseyClient.resource(HTTP_URI).path("cypher");
@@ -135,6 +126,27 @@ public class SingleHttpReqTransactionalIntegrationTest {
 				.post(ClientResponse.class, queryPersonJson);
 		respStr = JerseyClientUtil.getResponsePayload(response);
 		LOGGER.info("person query: {} ", respStr);
+	}
+
+	@Test
+	public void testDeleteAll() throws Exception {
+		WebResource webResource = jerseyClient.resource(HTTP_URI)
+				.path("cypher");
+		ClientResponse response = webResource
+				.accept(MediaType.APPLICATION_JSON)
+				.type(MediaType.APPLICATION_JSON)
+				.post(ClientResponse.class, deleteRelationshipJson);
+
+		String respStr = JerseyClientUtil.getResponsePayload(response);
+		LOGGER.info("delete relation:{} ", respStr);
+		// delete nodes
+		webResource = jerseyClient.resource(HTTP_URI)
+				.path("transaction/commit");
+		response = webResource.accept(MediaType.APPLICATION_JSON)
+				.type(MediaType.APPLICATION_JSON)
+				.post(ClientResponse.class, deleteNodesJson);
+		respStr = JerseyClientUtil.getResponsePayload(response);
+		LOGGER.info("delete nodes: {} ", respStr);
 	}
 
 }
