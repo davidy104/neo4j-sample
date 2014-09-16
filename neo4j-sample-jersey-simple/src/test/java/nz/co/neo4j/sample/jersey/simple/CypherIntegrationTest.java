@@ -34,14 +34,14 @@ public class CypherIntegrationTest {
 	private static final Logger LOGGER = LoggerFactory
 			.getLogger(CypherIntegrationTest.class);
 
-	private static final String TEST_CREATENODE = "/cypher/createNodes.json";
-	private static final String TEST_QUERY_PERSON = "/cypher/queryPerson.json";
-	private static final String TEST_DELETE = "/cypher/deleteNode.json";
+	private static final String TEST_CREATENODE = "/cypher/initial.json";
+	private static final String TEST_QUERY_PERSON = "/cypher/queryAuthor.json";
+	private static final String TEST_DELETE = "/cypher/cleanup.json";
 	@Autowired
 	private Client jerseyClient;
 
 	@Test
-	public void testTransactionalCreateNode() throws Exception {
+	public void testTransactionalInitial() throws Exception {
 		Path resPath = Paths.get(OpenTransactionalIntegrationTest.class
 				.getResource(TEST_CREATENODE).toURI());
 		String createNodesJson = new String(
@@ -92,7 +92,7 @@ public class CypherIntegrationTest {
 	}
 
 	@Test
-	public void testDelete() throws Exception {
+	public void testCleanup() throws Exception {
 		Path resPath = Paths.get(OpenTransactionalIntegrationTest.class
 				.getResource(TEST_DELETE).toURI());
 		String deleteJson = new String(
