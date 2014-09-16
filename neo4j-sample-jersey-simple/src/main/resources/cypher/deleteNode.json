@@ -1,6 +1,46 @@
 {
 	"statements":[
 		{
+			"statement":"MATCH (b:Book {title: {title},tags:{tags}})-[r]-(Person) WHERE Person.name = {name} DELETE r",
+			"parameters":{
+				"title":"Things Fall Apart",
+				"tags":[
+					"novel"
+				],
+				"name" : "Fyodor Dostoevsky"
+			}
+		},
+		{
+			"statement":"MATCH (b:Book {title: {title},tags:{tags}})-[r]-(Person) WHERE Person.name = {name} DELETE r",
+			"parameters":{
+				"title":"Pride and Prejudice",
+				"tags":[
+					"novel"
+				],
+				"name" : "Jane Austen"
+			}
+		},
+		{
+			"statement":"MATCH (b:Book {title: {title},tags:{tags}})-[r]-(User) WHERE User.name = {name} DELETE r",
+			"parameters":{
+				"title":"Things Fall Apart",
+				"tags":[
+					"novel"
+				],
+				"name":"dav"
+			}
+		},
+		{
+			"statement":"MATCH (b:Book {title: {title},tags:{tags}})-[r]-(User) WHERE User.name = {name} DELETE r",
+			"parameters":{
+				"title":"Pride and Prejudice",
+				"tags":[
+					"novel"
+				],
+				"name":"mike"
+			}
+		},
+		{
 			"statement":"MATCH (b:Book {title:{title},tags:{tags}}) DELETE b",
 			"parameters":{
 				"title":"Things Fall Apart",
@@ -14,7 +54,7 @@
 			"parameters":{
 				"name":"Fyodor Dostoevsky"
 			}
-		}
+		},
 		{
 			"statement":"MATCH (b:Book {title:{title},tags:{tags}}) DELETE b",
 			"parameters":{

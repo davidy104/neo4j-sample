@@ -11,9 +11,10 @@
 			}
 		},
 		{
-			"statement":"CREATE (b1) <-[v:Votes{score: round(rand()*3) + 2 }]- (u:User{name:{username}}) RETURN b1,v,u",
+			"statement":"CREATE (b1) <-[v:Votes{score:{score}]- (u:User{name:{username}}) RETURN b1,v,u",
 			"parameters":{
-				"username":"dav"
+				"username":"dav",
+				"score":3
 			}
 		},
 		{
@@ -27,13 +28,10 @@
 			}
 		},
 		{
-			"statement":"MATCH (b:Book {title:{title},tags:{tags}}) WITH b CREATE (b) <-[v:Votes{score: round(rand()*3) + 2 }]- (u:User{name:{username}}) RETURN b,v,u",
+			"statement":"CREATE (b) <-[v:Votes{score:{score}}]- (u:User{name:{username}}) RETURN b,v,u",
 			"parameters":{
-				"title":"Pride and Prejudice",
-				"tags":[
-					"novel"
-				],
-				"username":"mike"
+				"username":"mike",
+				"score":4
 			}
 		}
 	]
