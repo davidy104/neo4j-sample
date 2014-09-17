@@ -11,7 +11,7 @@
 			}
 		},
 		{
-			"statement":"CREATE (b1) <-[v:Votes{score:{score}]- (u:User{name:{username}}) RETURN b1,v,u",
+			"statement":"CREATE (b1) <-[v:Votes{score:{score}}]- (u:User{name:{username}}) RETURN b1,v,u",
 			"parameters":{
 				"username":"dav",
 				"score":3

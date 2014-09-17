@@ -1,0 +1,7 @@
+{
+	"query":"MATCH (n:Person) WHERE n.name={name} AND n.position = {position} DELETE n",
+	"params":{
+		"position":"Developer",
+		"name":"Michael"
+	}
+}

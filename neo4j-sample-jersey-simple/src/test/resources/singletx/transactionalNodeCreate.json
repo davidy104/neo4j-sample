@@ -1,0 +1,18 @@
+{
+	"statements":[
+		{
+			"statement":"CREATE (b:Book {title:{title},tags:{tags}})<-[a:AuthorOf]-(p:Person{name:{name}}) RETURN b,a,p",
+			"parameters":{
+				"title":"Things Fall Apart",
+				"tags":[
+					"novel"
+				],
+				"name":"Fyodor Dostoevsky"
+			},
+			"resultDataContents":[
+				"row",
+				"graph"
+			]
+		}
+	]
+}

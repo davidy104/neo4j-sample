@@ -1,0 +1,6 @@
+{
+	"query":"MATCH (b:Book)<-[:AuthorOf]-(p) WHERE b.title = {title} RETURN b,p",
+	"params":{
+		"title":"Things Fall Apart"
+	}
+}

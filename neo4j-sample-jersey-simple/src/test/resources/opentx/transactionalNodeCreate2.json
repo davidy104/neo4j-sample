@@ -1,0 +1,15 @@
+{
+	"statements":[
+		{
+			"statement":"CREATE (b:Book {title:{title}})<-[a:AuthorOf]-(p:Person{name:{name}}) RETURN b,a,p",
+			"parameters":{
+				"title":"Fairy tales",
+				"name":"Hans Christian Andersen"
+			},
+			"resultDataContents":[
+				"row",
+				"graph"
+			]
+		}
+	]
+}

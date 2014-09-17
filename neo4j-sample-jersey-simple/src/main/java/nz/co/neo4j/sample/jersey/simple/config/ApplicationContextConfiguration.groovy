@@ -13,14 +13,14 @@ import com.sun.jersey.api.json.JSONConfiguration;
 public class ApplicationContextConfiguration {
 
 	@Bean(destroyMethod = "destroy")
-	public Client jerseyClient() {
-		com.sun.jersey.api.client.config.ClientConfig config = new com.sun.jersey.api.client.config.DefaultClientConfig();
+	Client jerseyClient() {
+		com.sun.jersey.api.client.config.ClientConfig config = new com.sun.jersey.api.client.config.DefaultClientConfig()
 		config.getFeatures().put(JSONConfiguration.FEATURE_POJO_MAPPING,
-				Boolean.TRUE);
-		Client client = Client.create(config);
-		client.setConnectTimeout(10000);
-		client.setReadTimeout(10000);
-		client.addFilter(new LoggingFilter(System.out));
-		return client;
+				Boolean.TRUE)
+		Client client = Client.create(config)
+		client.setConnectTimeout(10000)
+		client.setReadTimeout(10000)
+		client.addFilter(new LoggingFilter(System.out))
+		return client
 	}
 }

@@ -1,0 +1,8 @@
+{
+  "query" : "MATCH (b:Book {title: {title}})-[r]-(Person) WHERE Person.name = {name} RETURN TYPE(r)",
+  "params" : {
+    "title" : "Things Fall Apart",
+    "name" : "Fyodor Dostoevsky"
+  }
+}
+

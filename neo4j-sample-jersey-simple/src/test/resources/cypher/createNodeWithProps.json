@@ -1,0 +1,11 @@
+{
+  "query" : "CREATE (n:Person { props } ) RETURN n",
+  "params" : {
+    "props" : {
+      "position" : "Developer",
+      "name" : "Michael",
+      "awesome" : true,
+      "children" : 3
+    }
+  }
+}

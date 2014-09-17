@@ -1,1 +1,0 @@
-CREATE (:Book {title:"Things Fall Apart",tags:["novel"]})<-[:AuthorOf]-(:Person{name:"Chinua Achebe"})
