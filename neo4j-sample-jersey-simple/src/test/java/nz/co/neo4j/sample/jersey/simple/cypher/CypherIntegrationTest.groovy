@@ -47,10 +47,10 @@ class CypherIntegrationTest {
 	static final String TEST_INITIAL = "/cypher/initial.json"
 	static final String TEST_QUERY_AUTHOR = "/cypher/queryAuthor.json"
 	static final String TEST_CLEANUP = "/cypher/cleanup.json"
-
 	static final String TEST_CREATE_NODE = "/cypher/createNode.json"
 	static final String TEST_DELETE_NODE = "/cypher/deleteNode.json"
 	static final String TEST_GET_NODE = "/cypher/getNode.json"
+	static final String TEST_SET_PROPS="/cypher/setProps.json"
 
 	@Resource
 	Neo4jRestJsonConverter converter
@@ -63,7 +63,7 @@ class CypherIntegrationTest {
 	@BeforeClass
 	static void setUp() {
 		jsonTestScripts = getJsonScripts(TEST_INITIAL, TEST_QUERY_AUTHOR,
-				TEST_CLEANUP, TEST_CREATE_NODE, TEST_DELETE_NODE, TEST_GET_NODE)
+				TEST_CLEANUP, TEST_CREATE_NODE, TEST_DELETE_NODE, TEST_GET_NODE,TEST_SET_PROPS)
 	}
 
 	@Before
@@ -99,6 +99,20 @@ class CypherIntegrationTest {
 			def error = jsonResult.get("errors")
 			throw new RuntimeException("teardown failed. ${error}")
 		}
+	}
+
+	/**
+	 * set properties will remove its original properties
+	 * 
+	 */
+	@Test
+	public void testSetPropertiesToNode(){
+		Map<String,Map<String,Object>> resultMap=[:]
+		ClientResponse response = execute(jsonTestScripts.get(TEST_SET_PROPS))
+		assertEquals(response.getStatusInfo().statusCode,
+				Status.OK.code)
+		String respStr = getResponsePayload(response)
+		log.info "response: {} $respStr"
 	}
 
 	@Test
