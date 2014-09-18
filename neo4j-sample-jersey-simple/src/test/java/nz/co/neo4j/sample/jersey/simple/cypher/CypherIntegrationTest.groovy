@@ -5,10 +5,8 @@ import static nz.co.neo4j.sample.jersey.simple.TestUtil.getJsonScripts
 import static nz.co.neo4j.sample.jersey.simple.TestUtil.jsonToMap
 import static org.junit.Assert.assertEquals
 import static org.junit.Assert.assertFalse
-import static org.junit.Assert.assertTrue
 import static org.junit.Assert.assertNull
-import java.util.Map;
-
+import static org.junit.Assert.assertTrue
 import groovy.json.JsonSlurper
 import groovy.util.logging.Slf4j
 
@@ -53,6 +51,7 @@ class CypherIntegrationTest {
 	static final String TEST_SET_PROPS="/cypher/setProps.json"
 	static final String TEST_RETURN_PATH="/cypher/returnPath.json"
 	static final String TEST_QUERY_PERSON_BYVOTE="/cypher/queryPersonByVote.json"
+	static final String TEST_MOST_SCORES="/cypher/maxscore.json";
 
 	@Resource
 	Neo4jRestJsonConverter converter
@@ -66,7 +65,7 @@ class CypherIntegrationTest {
 	static void setUp() {
 		jsonTestScripts = getJsonScripts(TEST_INITIAL, TEST_QUERY_AUTHOR,
 				TEST_CLEANUP, TEST_CREATE_NODE, TEST_DELETE_NODE, TEST_GET_NODE,TEST_SET_PROPS,
-				TEST_RETURN_PATH,TEST_QUERY_PERSON_BYVOTE)
+				TEST_RETURN_PATH,TEST_QUERY_PERSON_BYVOTE,TEST_MOST_SCORES)
 	}
 
 	@Before
@@ -102,6 +101,15 @@ class CypherIntegrationTest {
 			def error = jsonResult.get("errors")
 			throw new RuntimeException("teardown failed. ${error}")
 		}
+	}
+
+	@Test
+	void testMostScores(){
+		ClientResponse response = execute(jsonTestScripts.get(TEST_MOST_SCORES))
+//		assertEquals(response.getStatusInfo().statusCode,
+//				Status.OK.code)
+		String respStr = getResponsePayload(response)
+		log.info "response: {} $respStr"
 	}
 
 	@Test

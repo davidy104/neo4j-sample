@@ -1,3 +1,0 @@
-{
-	"query":"MATCH (b:Book) <-[r:Votes]- (:User) RETURN MAX(COLLECT(r.score)) as mostScore, COLLECT(r.score)"
-}

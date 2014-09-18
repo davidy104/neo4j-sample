@@ -1,0 +1,3 @@
+{
+	"query":"MATCH (b:Book) <-[r:Votes]- (:User) RETURN MAX(r.score), b"
+}
