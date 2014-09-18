@@ -51,6 +51,8 @@ class CypherIntegrationTest {
 	static final String TEST_DELETE_NODE = "/cypher/deleteNode.json"
 	static final String TEST_GET_NODE = "/cypher/getNode.json"
 	static final String TEST_SET_PROPS="/cypher/setProps.json"
+	static final String TEST_RETURN_PATH="/cypher/returnPath.json"
+	static final String TEST_QUERY_PERSON_BYVOTE="/cypher/queryPersonByVote.json"
 
 	@Resource
 	Neo4jRestJsonConverter converter
@@ -63,7 +65,8 @@ class CypherIntegrationTest {
 	@BeforeClass
 	static void setUp() {
 		jsonTestScripts = getJsonScripts(TEST_INITIAL, TEST_QUERY_AUTHOR,
-				TEST_CLEANUP, TEST_CREATE_NODE, TEST_DELETE_NODE, TEST_GET_NODE,TEST_SET_PROPS)
+				TEST_CLEANUP, TEST_CREATE_NODE, TEST_DELETE_NODE, TEST_GET_NODE,TEST_SET_PROPS,
+				TEST_RETURN_PATH,TEST_QUERY_PERSON_BYVOTE)
 	}
 
 	@Before
@@ -99,6 +102,24 @@ class CypherIntegrationTest {
 			def error = jsonResult.get("errors")
 			throw new RuntimeException("teardown failed. ${error}")
 		}
+	}
+
+	@Test
+	void testQueryPersonByVote(){
+		ClientResponse response = execute(jsonTestScripts.get(TEST_QUERY_PERSON_BYVOTE))
+		assertEquals(response.getStatusInfo().statusCode,
+				Status.OK.code)
+		String respStr = getResponsePayload(response)
+		log.info "response: {} $respStr"
+	}
+
+	@Test
+	void testReturnPath(){
+		ClientResponse response = execute(jsonTestScripts.get(TEST_RETURN_PATH))
+		assertEquals(response.getStatusInfo().statusCode,
+				Status.OK.code)
+		String respStr = getResponsePayload(response)
+		log.info "response: {} $respStr"
 	}
 
 	/**

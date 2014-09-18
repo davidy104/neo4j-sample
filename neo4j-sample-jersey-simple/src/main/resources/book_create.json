@@ -1,5 +1,0 @@
-CREATE (:Book {title:"The Idiot",tags:["novel"]})<-[:AuthorOf]-(:Person{name:"Fyodor Dostoevsky"})
-
-{"query":"CREATE (b:Book {title: {title},tags:["novel"]})<-[:AuthorOf]-(:Person{name:"Fyodor Dostoevsky"}) RETURN b","params":{"title":"The Idiot","tags":["novel"]}}
-
-String jsonBody = "{\"query\" : \"CREATE (u:User { name : {name}, surname: {surname} }) RETURN u\",\"params\" : {\"name\" : \"John\", \"surname\" : \"Doe\"}}";

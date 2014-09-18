@@ -1,0 +1,6 @@
+{
+	"query":"MATCH path = (x {title: 'Things Fall Apart',tags:['novel']})--(p) RETURN path, p.name",
+	"params":{
+		
+	}
+}

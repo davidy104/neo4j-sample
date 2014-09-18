@@ -1,0 +1,6 @@
+{
+	"query":"MATCH (b:Book {title:{title},tags:['novel']})<-[v:Votes]-(u:User)<-[:Has]-(p:Person) RETURN b,u,p",
+	"params":{
+		"title":"Things Fall Apart"
+	}
+}

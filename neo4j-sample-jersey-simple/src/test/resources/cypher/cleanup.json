@@ -1,54 +1,64 @@
 {
 	"statements":[
 		{
-			"statement":"MATCH (b:Book {title: {title},tags:{tags}})-[r]-(p:Person{name:{name}}) DELETE r,p",
+			"statement":"MATCH (b:Book {title: {title},tags:{tags}})-[r]-() DELETE b,r",
 			"parameters":{
 				"title":"Things Fall Apart",
 				"tags":[
 					"novel"
-				],
-				"name":"Fyodor Dostoevsky"
+				]
+				
 			}
+			
 		},
 		{
-			"statement":"MATCH (b:Book {title: {title},tags:{tags}})-[r]-(p:Person{name:{name}}) DELETE r,p",
+			"statement":"MATCH (b:Book {title: {title},tags:{tags}})-[r]-() DELETE b,r",
 			"parameters":{
 				"title":"Pride and Prejudice",
 				"tags":[
 					"novel"
-				],
-				"name":"Jane Austen"
+				]
 			}
+			
 		},
 		{
 			"statement":"MATCH ()-[r]-(u:User) WHERE u.name = {name} DELETE r,u",
 			"parameters":{
 				"name":"dav"
 			}
+			
 		},
 		{
 			"statement":"MATCH ()-[r]-(u:User) WHERE u.name = {name} DELETE r,u",
 			"parameters":{
 				"name":"mike"
 			}
+			
 		},
 		{
-			"statement":"MATCH (b:Book {title:{title},tags:{tags}}) DELETE b",
+			"statement":"MATCH ()-[r]-(u:User) WHERE u.name = {name} DELETE r,u",
 			"parameters":{
-				"title":"Things Fall Apart",
-				"tags":[
-					"novel"
-				]
+				"name":"jordan"
 			}
+			
 		},
 		{
-			"statement":"MATCH (b:Book {title:{title},tags:{tags}}) DELETE b",
-			"parameters":{
-				"title":"Pride and Prejudice",
-				"tags":[
-					"novel"
-				]
-			}
+			"statement":"MATCH (p:Person{name:'David Yuan'}) DELETE p"
+		},
+		{
+			"statement":"MATCH (p:Person{name:'Mike Yang'}) DELETE p"
+		},
+		{
+			"statement":"MATCH (p:Person{name:'Jordan X'}) DELETE p"
+		},
+		{
+			"statement":"MATCH (p:Person{name:'Fyodor Dostoevsky'}) DELETE p"
+		},
+		{
+			"statement":"MATCH (p:Person{name:'Jane Austen'}) DELETE p"
+		},
+		{
+			"statement":"MATCH (p:Publisher {name: 'Packt Publishing'}) DELETE p"
 		}
 		
 	]
