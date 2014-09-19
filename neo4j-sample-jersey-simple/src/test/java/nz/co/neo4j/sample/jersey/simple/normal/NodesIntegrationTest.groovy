@@ -42,6 +42,7 @@ class NodesIntegrationTest {
 
 	@Before
 	void intial() {
+		//create node without label
 		WebResource webResource = jerseyClient.resource(HTTP_URI).path(
 				"node")
 		String propertiesJson = "{\"name\" : \"Fyodor Dostoevsky\"}"
@@ -58,6 +59,31 @@ class NodesIntegrationTest {
 		String createdNodeUri = jsonResult.get('self')
 		log.info "createdNodeUri: {} $createdNodeUri"
 		testNodes.add(createdNodeUri)
+
+		//create another node
+		webResource = jerseyClient.resource(HTTP_URI).path(
+				"node")
+		propertiesJson = "{\"name\" : \"David Yuan\"}"
+		response = webResource
+				.accept(MediaType.APPLICATION_JSON)
+				.type(MediaType.APPLICATION_JSON)
+				.post(ClientResponse.class, propertiesJson)
+
+		if (response.getStatusInfo().statusCode != Status.CREATED.code) {
+			throw new RuntimeException('Create node failed.')
+		}
+		respStr = getResponsePayload(response)
+		jsonResult = (Map) jsonSlurper.parseText(respStr)
+		createdNodeUri = jsonResult.get('self')
+		log.info "createdNodeUri: {} $createdNodeUri"
+		testNodes.add(createdNodeUri)
+		//add label Person for previous Node created
+		String label = "[\"Person\"]"
+		webResource = jerseyClient.resource(createdNodeUri).path("/labels")
+		response = webResource
+				.accept(MediaType.APPLICATION_JSON)
+				.type(MediaType.APPLICATION_JSON)
+				.post(ClientResponse.class,label)
 	}
 
 	@After
@@ -75,7 +101,6 @@ class NodesIntegrationTest {
 			}
 		}
 	}
-
 
 	@Test
 	void testGetNode() {
@@ -110,7 +135,7 @@ class NodesIntegrationTest {
 		assertEquals(expectedErrorMessage,errorMessage)
 		assertEquals(expectedException,exception)
 	}
-	
+
 	@Test
 	void testAddingLabelToNode(){
 		String label = "[\"Person\"]"
@@ -121,25 +146,23 @@ class NodesIntegrationTest {
 				.type(MediaType.APPLICATION_JSON)
 				.post(ClientResponse.class,label)
 		String respStr = getResponsePayload(response)
-		log.info "response: {} $respStr"
+		log.info "testAddingLabelToNode response: {} $respStr"
 		assertEquals(response.getStatusInfo().statusCode,
-			Status.NO_CONTENT.code)
-		testListLabelsForNode()
-		testGetAllNodesWithlabel()
+				Status.NO_CONTENT.code)
 	}
-	
+
 	@Test
 	void testListLabelsForNode(){
-		String createdNodeUri = ((ArrayList)testNodes).get(0)
+		String createdNodeUri = ((ArrayList)testNodes).get(1)
 		WebResource webResource = jerseyClient.resource(createdNodeUri).path("/labels")
 		ClientResponse response = webResource
 				.accept(MediaType.APPLICATION_JSON)
 				.type(MediaType.APPLICATION_JSON)
 				.get(ClientResponse.class)
 		String respStr = getResponsePayload(response)
-		log.info "response: {} $respStr"
+		log.info "testListLabelsForNode response: {} $respStr"
 	}
-	
+
 	@Test
 	void testGetAllNodesWithlabel(){
 		WebResource webResource = jerseyClient.resource(HTTP_URI).path("/label/Person/nodes")
@@ -148,6 +171,35 @@ class NodesIntegrationTest {
 				.type(MediaType.APPLICATION_JSON)
 				.get(ClientResponse.class)
 		String respStr = getResponsePayload(response)
-		log.info "response: {} $respStr"
+		log.info "testGetAllNodesWithlabel response: {} $respStr"
+	}
+
+	@Test
+	void testReplacingLabelsOnNode(){
+		String jsonBody ="[ \"Actor\", \"Director\" ]";
+		String createdNodeUri = ((ArrayList)testNodes).get(1)
+		WebResource webResource = jerseyClient.resource(createdNodeUri).path("/labels")
+		ClientResponse response = webResource
+				.accept(MediaType.APPLICATION_JSON)
+				.type(MediaType.APPLICATION_JSON)
+				.put(ClientResponse.class,jsonBody)
+		String respStr = getResponsePayload(response)
+		log.info "testReplacingLabelsOnNode response: {} $respStr"
+		testListLabelsForNode()
+	}
+
+	@Test
+	void testRemoveLabelOnNode(){
+		//DELETE http://localhost:7474/db/data/node/286/labels/Person
+		String createdNodeUri = ((ArrayList)testNodes).get(1)
+		WebResource webResource = jerseyClient.resource(createdNodeUri).path("/labels/Person")
+		ClientResponse response = webResource
+				.accept(MediaType.APPLICATION_JSON)
+				.type(MediaType.APPLICATION_JSON)
+				.delete(ClientResponse.class)
+		String respStr = getResponsePayload(response)
+		log.info "testRemoveLabelOnNode response: {} $respStr"
+		assertEquals(response.getStatusInfo().statusCode,
+				Status.NO_CONTENT.code)
 	}
 }
