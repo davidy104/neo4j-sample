@@ -30,15 +30,10 @@ import com.sun.jersey.api.client.WebResource
 @Slf4j
 class NodesIntegrationTest {
 	static final String HTTP_URI = "http://localhost:7474/db/data/"
-
-	static Map<String, String> jsonTestScripts
 	@Resource
 	Client jerseyClient
-
 	def jsonSlurper = new JsonSlurper()
-
 	def testNodes = []
-
 
 	@Before
 	void intial() {
