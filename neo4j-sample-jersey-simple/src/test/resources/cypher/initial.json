@@ -67,6 +67,12 @@
 		},
 		{
 			"statement":"MATCH (p:Publisher {name: 'Packt Publishing'}), (b:Book {title:'Pride and Prejudice',tags:['novel']}) CREATE (b)-[:PublishedBy {year:2012}]->(p)"
+		},
+		{
+			"statement":"CREATE (:Person{name:'Miguel de Cervantes'})"
+		},
+		{
+			"statement":"CREATE (:Book{title:'Don Quixote'})"
 		}
 	]
 }

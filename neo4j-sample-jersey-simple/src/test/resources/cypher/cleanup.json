@@ -22,6 +22,12 @@
 			
 		},
 		{
+			"statement":"MATCH (b:Book {title: {title}}) DELETE b",
+			"parameters":{
+				"title":"Don Quixote"
+			}
+		},
+		{
 			"statement":"MATCH ()-[r]-(u:User) WHERE u.name = {name} DELETE r,u",
 			"parameters":{
 				"name":"dav"
@@ -56,6 +62,9 @@
 		},
 		{
 			"statement":"MATCH (p:Person{name:'Jane Austen'}) DELETE p"
+		},
+		{
+			"statement":"MATCH (p:Person{name:'Miguel de Cervantes'}) DELETE p"
 		},
 		{
 			"statement":"MATCH (p:Publisher {name: 'Packt Publishing'}) DELETE p"
