@@ -11,7 +11,7 @@ import groovy.util.logging.Slf4j
 import javax.annotation.Resource
 import javax.ws.rs.core.MediaType
 
-import nz.co.neo4j.sample.jersey.simple.Neo4jRestJsonConverter;
+import nz.co.neo4j.sample.jersey.simple.Neo4jRestJsonConverter
 import nz.co.neo4j.sample.jersey.simple.config.ApplicationContextConfiguration
 
 import org.junit.After
@@ -54,6 +54,8 @@ class RelationshipsIntegrationTest {
 	String testWithRelationshipPersonNodeUri
 	String testWithOutRelationshipBookNodeUri
 	String testWithOutRelationshipPersonNodeUri
+
+	String createdRelationshipUri
 
 	@BeforeClass
 	static void setUp() {
@@ -99,16 +101,32 @@ class RelationshipsIntegrationTest {
 
 
 	@Test
-	void testGetAllRelationships() {
+	void testGetRelationshipsByType() {
 		WebResource webResource = jerseyClient.resource(testWithRelationshipBookNodeUri)
-				.path("/relationships/all")
+				.path("/relationships/all/AuthorOf")
 		ClientResponse response =  webResource.accept(MediaType.APPLICATION_JSON)
 				.type(MediaType.APPLICATION_JSON)
 				.get(ClientResponse.class)
+		assertEquals(response.getStatusInfo().statusCode,
+				Status.OK.code)
 		String respStr = getResponsePayload(response)
 		log.info "testGetAllRelationships response :{} "+respStr
+		ArrayList jsonResult = (ArrayList) jsonSlurper.parseText(respStr)
+		Map resultMap = (Map)jsonResult.get(0)
+		log.info "relationship uri: {} "+resultMap.get('self')
 	}
 
+	@Test
+	void testDeleteRelationships(){
+		if(createdRelationshipUri){
+			
+		}
+	}
+
+
+	/*
+	 * collect Test Nodes URI
+	 */
 	void initialRelationshipsTestData(){
 		String body = "{\"query\":\"MATCH (b:Book)<-[:AuthorOf]-(p) WHERE b.title = 'Things Fall Apart' RETURN b,p\"}"
 		WebResource webResource = jerseyClient.resource(HTTP_URI)
