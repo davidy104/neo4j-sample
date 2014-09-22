@@ -83,6 +83,7 @@ class RelationshipsIntegrationTest {
 
 	@After
 	public void teardown() {
+		testDeleteRelationships()
 		String deleteJson = jsonTestScripts.get(TEST_CLEANUP);
 		WebResource webResource = jerseyClient.resource(HTTP_URI).path(
 				"transaction/commit")
@@ -117,9 +118,32 @@ class RelationshipsIntegrationTest {
 	}
 
 	@Test
+	void testCreateRelationships(){
+		String body ="{\"to\" : \""+testWithOutRelationshipBookNodeUri+"\",\"type\" : \"Vote\",\"data\" : {\"score\" : \"5\"}}"
+		WebResource webResource = jerseyClient.resource(testWithOutRelationshipPersonNodeUri).path('/relationships')
+		ClientResponse response =  webResource.accept(MediaType.APPLICATION_JSON)
+				.type(MediaType.APPLICATION_JSON)
+				.post(ClientResponse.class,body)
+		assertEquals(response.getStatusInfo().statusCode,
+				Status.CREATED.code)
+		String respStr = getResponsePayload(response)
+		log.info "testCreateRelationships response :{} "+respStr
+		Map jsonResult = (Map) jsonSlurper.parseText(respStr)
+		createdRelationshipUri = jsonResult.get('self')
+		log.info "createdRelationshipUri :{} "+createdRelationshipUri
+	}
+
+	@Test
 	void testDeleteRelationships(){
 		if(createdRelationshipUri){
-			
+			WebResource webResource = jerseyClient.resource(createdRelationshipUri)
+			ClientResponse response =  webResource.accept(MediaType.APPLICATION_JSON)
+					.type(MediaType.APPLICATION_JSON)
+					.delete(ClientResponse.class)
+			assertEquals(response.getStatusInfo().statusCode,
+					Status.NO_CONTENT.code)
+			String respStr = getResponsePayload(response)
+			log.info "testDeleteRelationships response :{} "+respStr
 		}
 	}
 
