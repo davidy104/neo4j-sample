@@ -5,7 +5,11 @@
 			"parameters":{
 				"username":"dav",
 				"name":"David Yuan"
-			}
+			},
+			"resultDataContents":[
+				"REST"
+			]
+			
 		},
 		{
 			"statement":"CREATE (u:User{name:{username}})<-[:Has]-(p:Person{name:{name}}) RETURN u,p",
@@ -13,6 +17,7 @@
 				"username":"mike",
 				"name":"Mike Yang"
 			}
+			
 		},
 		{
 			"statement":"CREATE (u:User{name:{username}})<-[:Has]-(p:Person{name:{name}}) RETURN u,p",
@@ -20,6 +25,7 @@
 				"username":"jordan",
 				"name":"Jordan X"
 			}
+			
 		},
 		{
 			"statement":"CREATE (b1:Book {title:{title},tags:{tags}})<-[a:AuthorOf]-(p:Person{name:{name}}) RETURN b1,a,p",
@@ -30,6 +36,7 @@
 				],
 				"name":"Fyodor Dostoevsky"
 			}
+			
 		},
 		{
 			"statement":"CREATE (b:Book {title:{title},tags:{tags}})<-[a:AuthorOf]-(p:Person{name:{name}}) RETURN b,a,p",
@@ -40,24 +47,28 @@
 				],
 				"name":"Jane Austen"
 			}
+			
 		},
 		{
 			"statement":"MATCH (u:User {name:'dav'}), (b:Book {title:'Things Fall Apart',tags:['novel']}) CREATE (u)-[v:Votes{score:{score}}]->(b)",
 			"parameters":{
 				"score":3
 			}
+			
 		},
 		{
 			"statement":"MATCH (u:User {name:'jordan'}), (b:Book {title:'Things Fall Apart',tags:['novel']}) CREATE (u)-[v:Votes{score:{score}}]->(b)",
 			"parameters":{
 				"score":5
 			}
+			
 		},
 		{
 			"statement":"MATCH (u:User {name:'mike'}), (b:Book {title:'Pride and Prejudice',tags:['novel']}) CREATE (u)-[v:Votes{score:{score}}]->(b)",
 			"parameters":{
 				"score":4
 			}
+			
 		},
 		{
 			"statement":"CREATE (:Publisher {name: 'Packt Publishing'})"
@@ -74,5 +85,6 @@
 		{
 			"statement":"CREATE (:Book{title:'Don Quixote'})"
 		}
+		
 	]
 }

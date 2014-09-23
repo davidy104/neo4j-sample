@@ -78,6 +78,7 @@ class CypherIntegrationTest {
 				.type(MediaType.APPLICATION_JSON)
 				.post(ClientResponse.class, intialJson)
 		String respStr = getResponsePayload(response)
+		log.info 'initial response: {} $respStr'
 		if (response.getStatusInfo().statusCode != Status.OK.code) {
 			Map jsonResult = (Map) jsonSlurper.parseText(respStr)
 			def error = jsonResult.get("errors")

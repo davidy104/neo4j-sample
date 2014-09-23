@@ -106,7 +106,11 @@ class NodesIntegrationTest {
 				.type(MediaType.APPLICATION_JSON)
 				.get(ClientResponse.class)
 		String respStr = getResponsePayload(response)
-		log.info "response: {} $respStr"
+		log.info "testGetNode response: {} $respStr"
+		Map mapResult = (Map) jsonSlurper.parseText(respStr)
+		String self = mapResult.get('self')
+		String id = self.substring(self.lastIndexOf('/')+1,self.length())
+		log.info "id: {} $id"
 	}
 
 	@Test
