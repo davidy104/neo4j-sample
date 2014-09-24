@@ -1,0 +1,13 @@
+{
+	"query":"MATCH (p:Person {name: {name}}) SET p = { props } RETURN p",
+	"params":{
+		"name":"Not Exist Person",
+		"props":{
+			"name":"Not Exist Person",
+			"position":"Developer",
+			"awesome":true,
+			"children":3
+		}
+		
+	}
+}

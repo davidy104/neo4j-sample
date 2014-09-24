@@ -52,6 +52,7 @@ class CypherIntegrationTest {
 	static final String TEST_RETURN_PATH="/cypher/returnPath.json"
 	static final String TEST_QUERY_PERSON_BYVOTE="/cypher/queryPersonByVote.json"
 	static final String TEST_MOST_SCORES="/cypher/maxscore.json";
+	static final String TEST_SET_PROPS_NONNODE="/cypher/setNonexistNodeProps.json"
 
 	@Resource
 	Neo4jRestJsonConverter converter
@@ -65,7 +66,7 @@ class CypherIntegrationTest {
 	static void setUp() {
 		jsonTestScripts = getJsonScripts(TEST_INITIAL, TEST_QUERY_AUTHOR,
 				TEST_CLEANUP, TEST_CREATE_NODE, TEST_DELETE_NODE, TEST_GET_NODE,TEST_SET_PROPS,
-				TEST_RETURN_PATH,TEST_QUERY_PERSON_BYVOTE,TEST_MOST_SCORES)
+				TEST_RETURN_PATH,TEST_QUERY_PERSON_BYVOTE,TEST_MOST_SCORES,TEST_SET_PROPS_NONNODE)
 	}
 
 	@Before
@@ -107,8 +108,8 @@ class CypherIntegrationTest {
 	@Test
 	void testMostScores(){
 		ClientResponse response = execute(jsonTestScripts.get(TEST_MOST_SCORES))
-//		assertEquals(response.getStatusInfo().statusCode,
-//				Status.OK.code)
+		//		assertEquals(response.getStatusInfo().statusCode,
+		//				Status.OK.code)
 		String respStr = getResponsePayload(response)
 		log.info "response: {} $respStr"
 	}
@@ -141,6 +142,14 @@ class CypherIntegrationTest {
 		ClientResponse response = execute(jsonTestScripts.get(TEST_SET_PROPS))
 		assertEquals(response.getStatusInfo().statusCode,
 				Status.OK.code)
+		String respStr = getResponsePayload(response)
+		log.info "response: {} $respStr"
+	}
+
+	@Test
+	public void testSetPropertiesToNonexistNode(){
+		Map<String,Map<String,Object>> resultMap=[:]
+		ClientResponse response = execute(jsonTestScripts.get(TEST_SET_PROPS_NONNODE))
 		String respStr = getResponsePayload(response)
 		log.info "response: {} $respStr"
 	}
@@ -204,6 +213,18 @@ class CypherIntegrationTest {
 		log.info "author query: {} $respStr"
 		assertEquals(response.getStatusInfo().getStatusCode(),
 				Status.OK.getStatusCode());
+	}
+
+	@Test
+	void testQueryNoRelationshipNode(){
+		String noRelationshipPerson = "{\"query\":\"MATCH (p:Person{name:{name}}) WHERE NOT (p)-[]->() RETURN p\",\"params\":{\"name\":\"Miguel de Cervantes\"}}"
+		String hasRelationshipPerson = "{\"query\":\"MATCH (p:Person{name:{name}}) WHERE NOT (p)-[]->() RETURN p\",\"params\":{\"name\":\"Jane Austen\"}}"
+		ClientResponse response = execute(noRelationshipPerson);
+		String respStr = getResponsePayload(response);
+		log.info "testQueryNoRelationshipNode response: {} $respStr"
+		
+		ArrayList dataList = (ArrayList)((Map)jsonSlurper.parseText(respStr)).get('data')
+		log.info "data empty: {} "+dataList.isEmpty()
 	}
 
 	ClientResponse execute(final String jsonBody){
