@@ -192,6 +192,16 @@ public class DumpQueriesSlowTest {
 		dump("MATCH (b:Book) RETURN 'Books' as type, COUNT(b) as cnt UNION ALL "
 				+ "MATCH (a:Person) RETURN 'Authors' as type, COUNT(a) as cnt");
 	}
+	/**
+	 * START player = node:players('name:*')
+		MATCH player-[:sent_off_in]-game-[:in_month]-month
+		RETURN COUNT(player.name) AS numberOfReds, month.name
+		ORDER BY numberOfReds DESC
+	 */
+	@Test
+	public void testMostBooksAuthor(){
+		dump("MATCH (p:Person)-[a:AuthorOf]-(b:Book) RETURN p.name as authorName, COUNT(b) AS bookCount ORDER BY bookCount DESC");
+	}	
 
 	private void dump(final String query) {
 		LOGGER.info(query);
